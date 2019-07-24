@@ -1,0 +1,14 @@
+课件
+复习 if for switch 
+复习int float string bool Struct
+复习函数
+
+问答
+
+
+习题：
+白白 蒙萌 吴鹏 Naomi 各出三道题
+要求：
+1. 训练结构体与函数的配合使用
+2. 不需要太复杂的算法
+
