@@ -43,7 +43,7 @@ public class Lesson6_Naomi : MonoBehaviour
     {
         //1-7题-----------------------------------------------------------------
         //问：调用函数时如果和声明函数的时候用的是同样的名字，会报错？
-        //EatingSleepingBeatingDoudou(ref wupenG, ref doudoU, ref zZ, ref wuwU, ref meng);
+        EatingSleepingBeatingDoudou(ref wupenG, ref doudoU, ref zZ, ref wuwU, ref meng);
 
         //8题-------------------------------------------------------------------
         //TrafficState(ref trafficTime,ref lightState);
@@ -52,7 +52,7 @@ public class Lesson6_Naomi : MonoBehaviour
         //PrintDateTime(ref timenow,ref timer);
 
         //10题-------------------------------------------------------------------
-        Rocket(ref rocketTime, ref rocketstate);
+        //Rocket(ref rocketTime, ref rocketstate);
     }
 
     //1-7题---------------------------------------------------------------------
@@ -221,7 +221,8 @@ public class Lesson6_Naomi : MonoBehaviour
             {
                     wupeng.CurrentTime += Time.deltaTime;
                     mengmeng.AtkAdding(ref wupeng);
-                    if (wupeng.CurrentTime >= 3.0f)//问：大于和等于的时间应该是不一样的？
+                    //问：大于和等于的时间应该是不一样的？第二遍开始不再debug吴鹏开始打豆豆了。为什么？
+                    if (wupeng.CurrentTime > 3.0f)
                     {
                         wupeng.Nrg = 100f;
                         wupeng.CurrentStats = Wupeng.Stats.Beat;
@@ -233,20 +234,24 @@ public class Lesson6_Naomi : MonoBehaviour
             case Wupeng.Stats.Beat:
             {
                     wupeng.CurrentTime += Time.deltaTime;
-                    wupeng.Nrg -= 10;
-                    Debug.Log("Wupeng.Energy drops to " + wupeng.Nrg);
                     mengmeng.AtkAdding(ref wupeng);
-                    doudou.HP -= wupeng.Atk;
-                    Debug.Log("doudou.HP drops to" + doudou.HP);
-                    if (wupeng.Nrg < 0.0f)
+                    if (wupeng.CurrentTime > 1.0f)
                     {
-                        wupeng.CurrentStats = Wupeng.Stats.Sleep;
+                        wupeng.Nrg -= 10;
+                        doudou.HP -= wupeng.Atk;
+                        Debug.Log("Wupeng.Energy drops to " + wupeng.Nrg);
+                        Debug.Log("doudou.HP drops to" + doudou.HP);
                         wupeng.CurrentTime = 0.0f;
-                        wupeng.Atk = wupeng.AtkBase;
-                        Debug.Log("Wupeng.Atk returns to" + wupeng.Atk);
-                        Debug.Log("Wupeng starts sleeping");
+                        if (wupeng.Nrg < 0.0f)
+                        {
+                            wupeng.CurrentStats = Wupeng.Stats.Sleep;
+                            wupeng.CurrentTime = 0.0f;
+                            wupeng.Atk = wupeng.AtkBase;
+                            Debug.Log("Wupeng.Atk returns to" + wupeng.Atk);
+                            Debug.Log("Wupeng starts sleeping");
+                        }
                     }
-            }
+                }
             break;
             case Wupeng.Stats.Sleep:
             {
