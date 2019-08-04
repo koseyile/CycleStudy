@@ -59,7 +59,9 @@ public class Lesson6HWbaibai : MonoBehaviour
         RunQ6();
         RunQ7();
 
-        lightImage.color = Color.red;
+        lightImageRed.color = Color.red;
+        lightImageGreen.color = Color.gray;
+        lightImageYellow.color = Color.gray;
         zhujiangxilu.LightType = 0;
 
         StartTime();
@@ -389,11 +391,15 @@ public class Lesson6HWbaibai : MonoBehaviour
     }
 
     LightState currentLight = LightState.RedLight;
-    public Image lightImage;
+    public Image lightImageRed;
+    public Image lightImageYellow;
+    public Image lightImageGreen;
     float trafficTime = 0f;
     TrafficLight zhujiangxilu = new TrafficLight();
     [HideInInspector]
-    public bool previousRed = true; 
+    public bool previousRed = true;
+
+
 
     void TurnOnTrafficLight() {
 
@@ -409,7 +415,8 @@ public class Lesson6HWbaibai : MonoBehaviour
                         //set previous
                         previousRed = true;
                         //image change
-                        lightImage.color = Color.yellow;
+                        lightImageYellow.color = Color.yellow;
+                        lightImageRed.color = Color.gray;
                         //value change
                         zhujiangxilu.LightType = 2;
                         Debug.Log("Light Change to Yellow.");          
@@ -426,7 +433,8 @@ public class Lesson6HWbaibai : MonoBehaviour
                         //set previous
                         previousRed = false;
                         //image change
-                        lightImage.color = Color.yellow;
+                        lightImageYellow.color = Color.yellow;
+                        lightImageGreen.color = Color.gray;
                         //value change
                         zhujiangxilu.LightType = 2;
                         Debug.Log("Light Change to Yellow.");
@@ -443,7 +451,8 @@ public class Lesson6HWbaibai : MonoBehaviour
                             //reset time
                             trafficTime = 0f;
                             //image change
-                            lightImage.color = Color.green;
+                            lightImageGreen.color = Color.green;
+                            lightImageYellow.color = Color.gray;
                             //value change
                             zhujiangxilu.LightType = 1;
                             Debug.Log("Light Change to Green.");
@@ -453,7 +462,8 @@ public class Lesson6HWbaibai : MonoBehaviour
                             //reset time
                             trafficTime = 0f;
                             //image change
-                            lightImage.color = Color.red;
+                            lightImageRed.color = Color.red;
+                            lightImageYellow.color = Color.gray;
                             //value change
                             zhujiangxilu.LightType = 0;
                             Debug.Log("Light Change to Red.");
