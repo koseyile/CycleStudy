@@ -97,7 +97,7 @@
                         if(huolieniao.HP<1150)
                         {
                             current_event =  attack_event.zz_attack_fadein;
-                            GameObject.Find("yunjian").transform.position  = new Vector3(291f, 182f, 0.0f);
+                            yunjianI.transform.position  = new Vector3(340f, 530f, 0f);
                         }
                         current_time=0f;
                         }
