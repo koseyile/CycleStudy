@@ -1,0 +1,25 @@
+fileFormatVersion: 2
+guid: 4a18293dcbc494ed2a788a81d3693eb8
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - imageOro: {instanceID: 0}
+  - fire: {instanceID: 0}
+  - oroHP: {instanceID: 0}
+  - oroDamage: {instanceID: 0}
+  - imageMol: {instanceID: 0}
+  - poison: {instanceID: 0}
+  - molHP: {instanceID: 0}
+  - molDamage: {instanceID: 0}
+  - imageZz: {instanceID: 0}
+  - imageZzAttack: {fileID: 21300000, guid: d79b2fe2ef93d49f99cd5be131b7c416, type: 3}
+  - imageZzEnd: {fileID: 21300000, guid: fbd46cc83376c4cd495f760d5b621d31, type: 3}
+  - wow: {instanceID: 0}
+  - white: {instanceID: 0}
+  - imageMetal: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
