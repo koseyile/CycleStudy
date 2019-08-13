@@ -4,4 +4,5 @@ int j = 0;
 j++;
 Debug.log(j);
 public string "hongyi";
+public string wupeng
 Debug.log(i);
