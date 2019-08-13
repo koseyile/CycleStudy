@@ -3,6 +3,6 @@ HomeWork/Lesson7/ZZandYamataNoOrochi/Library/
 HomeWork/Lesson7/ZZandYamataNoOrochi/Temp/
 *.csproj
 *.sln
-*.asset
 HomeWork/Lesson7/ZZandYamataNoOrochi/Packages/manifest.json
-HomeWork/Lesson7/ZZandYamataNoOrochi/ProjectSettings/ProjectVersion.txt
+HomeWork/Lesson7/ZZandYamataNoOrochi/ProjectSettings/
+HomeWork/Lesson7/ZZandYamataNoOrochi/obj/
