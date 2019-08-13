@@ -1,0 +1,9 @@
+课件：
+版本控制工具，及调试工具：
+1. Commit时的注意事项
+2. Conflict
+3. Revert this commit  根据实验正确翻译应该是什么
+4. Debug
+    1. Break point
+    2. Step over/step in/step out
+    3. Call stack
