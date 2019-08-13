@@ -3,4 +3,5 @@ i++;
 int j = 0;
 j++;
 Debug.log(j);
+public string "hongyi";
 Debug.log(i);
