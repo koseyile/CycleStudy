@@ -1,3 +1,6 @@
 int i = 0;
 i++;
+int j = 0;
+j++;
+Debug.log(j);
 Debug.log(i);
