@@ -4,17 +4,22 @@ using UnityEngine;
 
 public class wupeng : MonoBehaviour
 {
+    /*问题1：我没有创建哈密瓜等类，因为Animal中只需要一个Fruit的对象。如果创建了哈密瓜等类，
+            就需要在Animal类的对象中实例化一个特定的哈密瓜对象。题目中么只是说喜欢吃什么类
+            型，没有说喜欢哪一个哈密瓜，不知道我这样理解对不对
+
+      问题2: 87行
+
+      问题3： 有没有办法将父类型转换为子类型？ */
+
 
     Apple apple;
     Apple[] apples;
     Apple[] redApples;
     Apple[] greenApples;
 
-
-
     void Start ()
     {
-        int[] a = new int[1] { 1 };
 
         //02.声明一个苹果类继承自水果类，实例化一个1斤重的红色苹果
         apple = new Apple("red", "", 1.0f);
@@ -33,29 +38,27 @@ public class wupeng : MonoBehaviour
         
         //05.白白喜欢吃的水果有苹果，桔子。巫巫喜欢吃的水果有苹果，西瓜。淡淡喜欢吃的水果有樱桃，哈密瓜。小猴子最喜欢吃的水果有香蕉。请声明数组存储三个人类和一只猴子。
         
-        Human baibai = InstantiateAnimal("Human" ,"baibai", new Fruit[] { new Fruit("","苹果", 0.0f), new Fruit("", "橘子", 0.0f) }, null) as Human;
-        Human wuwu = InstantiateAnimal("Human", "wuwu", new Fruit[] { new Fruit("", "苹果", 0.0f), new Fruit("", "西瓜", 0.0f) }, null) as Human;
-        Human dandan = InstantiateAnimal("Human", "dandan", new Fruit[] { new Fruit("", "樱桃", 0.0f), new Fruit("", "哈密瓜", 0.0f) }, null) as Human;
-        Monkey monkey = InstantiateAnimal("Monkey", "monmon", new Fruit[] { new Fruit("", "香蕉", 0.0f) }, null) as Monkey;
+        Human baibai = new Human("baibai", new Fruit[] { new Fruit("红色","苹果", 0.0f), new Fruit("", "橘子", 0.0f) }, null) ;
+        Human wuwu = new Human("wuwu", new Fruit[] { new Fruit("红色", "苹果", 0.0f), new Fruit("", "西瓜", 0.0f) }, null);
+        Human dandan = new Human("dandan", new Fruit[] { new Fruit("紫红", "樱桃", 0.0f), new Fruit("", "哈密瓜", 0.0f) }, null);
+        Monkey monkey = new Monkey("monmon", new Fruit[] { new Fruit("黄色", "香蕉", 0.0f) }, null);
 
         Animal[] animals = new Animal[4];
 
-        Debug.Log(animals.Length);
-        ////animals = new Animal[4];  这里出错了，一开始我在外部没有new实例化，在内部实例化
-        //animals[0] = baibai;
-        //animals[1] = wuwu;
-        //animals[2] = dandan;
-        //animals[3] = monkey;
+        animals[0] = baibai;
+        animals[1] = wuwu;
+        animals[2] = dandan;
+        animals[3] = monkey;
 
         //06. 遍历数组，打印出白白喜欢吃的水果的名称和颜色。
         Debug.Log("06:");
         for (int i = 0; i < animals.Length; i ++)
         {
-            Debug.Log(1);
-            //if (animals[i].name == "baibai")
-            //{
-            //    animals[i].SayMyFavouriteFruit();
-            //}
+        
+            if (animals[i].name == "baibai")
+            {
+                animals[i].SayMyFavouriteFruit();
+            }
         }
 
         //07.遍历数组，打印数组里非人类喜欢吃的水果的名称和颜色。
@@ -128,17 +131,6 @@ public class wupeng : MonoBehaviour
 
         return sum;
     }
-
-    Animal InstantiateAnimal(string type ,string name, Fruit[] favrourite, Animal friend)
-    {
-        Animal animal = new Animal();
-        animal.type = type;
-        animal.name = name;
-        animal.favouriteFruits = favrourite;
-        animal.friend = friend;
-
-        return animal;
-    }
     
 }
 
@@ -192,11 +184,23 @@ public class Animal
 
 public class Human : Animal
 {
-
+    public Human(string n, Fruit[] favrourite, Animal f)
+    {
+        type = "Human";
+        name = n;
+        favouriteFruits = favrourite;
+        friend = f;
+    }
 }
 public class Monkey : Animal
 {
-
+    public Monkey(string n, Fruit[] favrourite, Animal f)
+    {
+        type = "Monkey";
+        name = n;
+        favouriteFruits = favrourite;
+        friend = f;
+    }
 }
 
 
