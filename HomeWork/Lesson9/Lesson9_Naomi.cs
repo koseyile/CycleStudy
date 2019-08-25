@@ -55,7 +55,7 @@ public class Lesson9_Naomi : MonoBehaviour
             
         }
 
-        //Q8 已知白白最好的朋友是巫巫，巫巫最好的朋友是淡淡，淡淡最好的朋友是小猴子，小猴子最好的朋友是白白，打印出白白的好朋友的好朋友的好朋友喜欢吃的水果的名称和颜色。
+        //8.已知白白最好的朋友是巫巫，巫巫最好的朋友是淡淡，淡淡最好的朋友是小猴子，小猴子最好的朋友是白白，打印出白白的好朋友的好朋友的好朋友喜欢吃的水果的名称和颜色。
         animals[0].BFF = animals[1];
         animals[1].BFF = animals[2];
         animals[2].BFF = animals[3];
@@ -105,6 +105,7 @@ public class Lesson9_Naomi : MonoBehaviour
 
 //----------------------------------------类------------------------------------
 
+//1. 声明一个水果类，具有如下成员：颜色，名称，重量。
 public class Fruit
 {
     public string Name;
@@ -139,6 +140,7 @@ public class Apple : Fruit
 
 }
 
+//5. 白白喜欢吃的水果有苹果，桔子。巫巫喜欢吃的水果有苹果，西瓜。淡淡喜欢吃的水果有樱桃，哈密瓜。小猴子最喜欢吃的水果有香蕉。请声明数组存储三个人类和一只猴子。
 public class Animal
 {
     public string Name;
