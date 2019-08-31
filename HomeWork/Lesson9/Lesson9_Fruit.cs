@@ -2,25 +2,43 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Fruit 
-{
-    public string name;
-    public string color;
-    public float weight; // unit: 斤
+namespace BBB {
 
-    public Fruit(string n, string c, float w)
+    public class Fruit
     {
-        name = n;
-        color = c;
-        weight = w;
+        public string name;
+        public string color;
+        public float weight; // unit: 斤
+
+        public Fruit(string n, string c, float w)
+        {
+            name = n;
+            color = c;
+            weight = w;
+        }
+
+        public Fruit(string n, string c, float min, float max)
+        {
+            name = n;
+            color = c;
+            weight = Random.Range(min, max); 
+        }
+
+    }
+
+    public class Apple : Fruit
+    {
+
+        public Apple(string n, string c, float w) : base(n, c, w)
+        {
+        }
+
+        public Apple(string n, string c, float min, float max) : base(n, c, min, max)
+        {
+        }
     }
 }
 
-public class Apple: Fruit {
-
-    public Apple(string n, string c, float w) : base(n, c, w) {
-    }
-}
 
 
 
