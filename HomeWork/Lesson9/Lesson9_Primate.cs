@@ -2,53 +2,48 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public class Primate 
+{
+    public string name;
+    public Primate bestF;
+    public FavoriteFruit[] favorFruit;
 
-namespace BBB {
-    public class Primate
+    public Primate(string n, FavoriteFruit[] favF)
     {
-        public string name;
-        public Primate bestF;
-        public FavoriteFruit[] favorFruit;
-
-        public Primate(string n, FavoriteFruit[] favF)
-        {
-            name = n;
-            favorFruit = favF;
-        }
-
-        public Primate(string n)
-        {
-            name = n;
-        }
+        name = n;
+        favorFruit = favF;
     }
 
-    public struct FavoriteFruit
+    public Primate(string n)
     {
-        public string Name;
-        public string Color;
-    }
-
-    public class Human : Primate
-    {
-        public Human(string n, FavoriteFruit[] favF) : base(n, favF)
-        {
-        }
-
-        public Human(string n) : base(n)
-        {
-        }
-    }
-
-    public class Monkey : Primate
-    {
-        public Monkey(string n, FavoriteFruit[] favF) : base(n, favF)
-        {
-        }
-
-        public Monkey(string n) : base(n)
-        {
-        }
+        name = n;
     }
 }
 
+public struct FavoriteFruit {
+    public string Name;
+    public string Color;
+}
+
+public class Human : Primate
+{
+    public Human(string n, FavoriteFruit[] favF) : base(n, favF)
+    {
+    }
+
+    public Human(string n) : base(n)
+    {
+    }
+}
+
+public class Monkey : Primate
+{
+    public Monkey(string n, FavoriteFruit[] favF) : base(n, favF)
+    {
+    }
+
+    public Monkey(string n) : base(n)
+    {
+    }
+}
 

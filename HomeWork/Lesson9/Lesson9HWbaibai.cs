@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using BBB;
 
 public class Lesson9HWbaibai : MonoBehaviour
 {
@@ -24,47 +23,41 @@ public class Lesson9HWbaibai : MonoBehaviour
     void Start()
     {
         //Q2
-        BBB.Apple apple = new BBB.Apple("Apple", "Red", 1.0f);
+        Apple apple = new Apple("Apple", "Red", 1.0f);
         Debug.Log("Q2: " + apple.name + " " + apple.color + " "  + apple.weight + "斤");
 
         //Q3 
-        BBB.Apple[] applesRed = new BBB.Apple[10];
-        CreateApples(ref applesRed, "Red", 0.1f, 1.5f);
-        float sum = SumAppleWeight(applesRed);
+        float sum = SumApples("Red", 10, 0.1f, 1.5f);
         Debug.Log("Q3: 10个0.1到1.5斤重的红色苹果的总重量: " + sum + "斤");
 
         //Q4 实例化5个0.5到1.8斤重的绿苹果，实例化6个0.2到1.2斤重的红苹果。求这些苹果的总价钱。
-        BBB.Apple[] applesG = new BBB.Apple[5];
-        CreateApples(ref applesG, "Green", 0.5f, 1.8f);
-        BBB.Apple[] applesR = new BBB.Apple[6];
-        CreateApples(ref applesR, "Red", 0.2f, 1.2f);
         float greenPrice = 8.0f; //元/斤
         float redPrice = 12.0f;
-        float price = CalApplePrice(applesG, greenPrice) + CalApplePrice(applesR, redPrice);
+        float price = CalApplePrice("Green", 5, 0.5f, 1.8f, greenPrice) + CalApplePrice("Red", 6, 0.2f, 1.2f, redPrice);
         Debug.Log("Q4: 5个0.5到1.8斤重的绿苹果+6个0.2到1.2斤重的红色苹果的总价钱: " + price +"元");
 
         //5.白白喜欢吃的水果有苹果，桔子。巫巫喜欢吃的水果有苹果，西瓜。
         //淡淡喜欢吃的水果有樱桃，哈密瓜。小猴子最喜欢吃的水果有香蕉。请声明数组存储三个人类和一只猴子。
-        BBB.Primate[] group = new BBB.Primate[4];
+        Primate[] group = new Primate[4];
 
-        BBB.FavoriteFruit[] bbFruit = new BBB.FavoriteFruit[2];
+        FavoriteFruit[] bbFruit = new FavoriteFruit[2];
         bbFruit[0].Name = "Apple";
         bbFruit[1].Name = "Orange";
-        group[0] = new BBB.Human("白白", bbFruit);
+        group[0] = new Human("白白", bbFruit);
 
-        BBB.FavoriteFruit[] wwFruit = new BBB.FavoriteFruit[2];
+        FavoriteFruit[] wwFruit = new FavoriteFruit[2];
         wwFruit[0].Name = "Apple";
         wwFruit[1].Name = "WaterMelon";
-        group[1] = new BBB.Human("巫巫", wwFruit);
+        group[1] = new Human("巫巫", wwFruit);
 
-        BBB.FavoriteFruit[] ddFruit = new BBB.FavoriteFruit[2];
+        FavoriteFruit[] ddFruit = new FavoriteFruit[2];
         ddFruit[0].Name = "Cherry";
         ddFruit[1].Name = "Melon";
-        group[2] = new BBB.Human("淡淡", ddFruit);
+        group[2] = new Human("淡淡", ddFruit);
 
-        BBB.FavoriteFruit[] xxFruit = new BBB.FavoriteFruit[1];
+        FavoriteFruit[] xxFruit = new FavoriteFruit[1];
         xxFruit[0].Name = "Banana";
-        group[3] = new BBB.Monkey("小小", xxFruit);
+        group[3] = new Monkey("小小", xxFruit);
 
         //Q6 遍历数组，打印出白白喜欢吃的水果的名称和颜色。
         for (int i = 0; i < group.Length; i++)
@@ -77,7 +70,7 @@ public class Lesson9HWbaibai : MonoBehaviour
         //Q7 遍历数组，打印数组里非人类喜欢吃的水果的名称和颜色。
         for (int i = 0; i < group.Length; i++)
         {
-            if (group[i] is BBB.Human == false) 
+            if (group[i] is Human == false) 
             {
                 PrintFavoriteF(group[i], group[i].name);
             }
@@ -97,20 +90,16 @@ public class Lesson9HWbaibai : MonoBehaviour
 
 
     //3. 随机实例化10个0.1到1.5斤重的红色苹果，求出这些苹果的总重量。
-
-    void CreateApples(ref BBB.Apple[] aaa, string clr, float min, float max) {
-        for (int i = 0; i < aaa.Length; i++)
-        {
-            aaa[i] = new BBB.Apple("Apple", clr, min, max);
-        }
-    }
-
-    float SumAppleWeight(BBB.Apple[] apples) {
+    float SumApples(string clr, int amount, float min, float max) {
 
         float sum = 0f;
 
-        for (int i=0; i<apples.Length; i++) {
-            sum += apples[i].weight;
+        Apple[] Apples = new Apple[amount];
+
+        for (int i=0; i<Apples.Length; i++) {
+            float x = Random.Range(min,max);
+            Apples[i] = new Apple("Apple", clr, x);
+            sum = +x;
         }
         
         return sum;
@@ -118,13 +107,13 @@ public class Lesson9HWbaibai : MonoBehaviour
 
     //4. 已知绿色苹果8元/斤，红色苹果12元/斤，实例化5个0.5到1.8斤重的绿苹果，
     //实例化6个0.2到1.2斤重的红苹果。求这些苹果的总价钱。
-    float CalApplePrice(BBB.Apple[] apples, float price) {
+    float CalApplePrice(string color, int amount, float min, float max, float price) {
 
-        return SumAppleWeight(apples) * price;
+        return SumApples(color, amount, min, max) * price;
     }
 
     //6&7&8
-    void PrintFavoriteF(BBB.Primate a, string ini) {
+    void PrintFavoriteF(Primate a, string ini) {
 
         string p = ini + "喜欢吃的水果: ";
 
