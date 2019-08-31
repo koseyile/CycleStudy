@@ -26,14 +26,15 @@ namespace MengMeng
         public GameObject FruitPrefab;
         public GameObject ColorfulApple;
         private SnakeNode snakeNode;
-
+        private List<Fruit> Snacks;
+        private bool victory = false;
         static public float xMax = 10.0f;
         static public float zMax = 10.0f;
         // Start is called before the first frame update
         void Start()
         {
             snakeNode = CreateSnake();
-            //CreateFruits();
+            Snacks = CreateFruits();
         }
 
         // Update is called once per frame
@@ -41,6 +42,8 @@ namespace MengMeng
         {
             snakeNode.Update();
             snakeNode.UpdateInput();
+            CheckEatFood(Snacks);
+            CheckVictory();
         }
 
         SnakeNode CreateSnake()
@@ -51,20 +54,47 @@ namespace MengMeng
             return snakehead;
         }
 
-
         List<Fruit> CreateFruits()
         {
-            List<Fruit> Snacks = new List<Fruit>();
-            Snacks.Add(new Fruit("apple", "colorful", new Vector3(Random.Range(-xMax, xMax), 0, Random.Range(-zMax, zMax)), ColorfulApple));
-            Snacks.Add(new Fruit("mango", "yellow", new Vector3(Random.Range(-xMax, xMax), 0, Random.Range(-zMax, zMax)), FruitPrefab));
-            Snacks.Add(new Fruit("strawberry", "red", new Vector3(Random.Range(-xMax, xMax), 0, Random.Range(-zMax, zMax)), FruitPrefab));
-            Snacks.Add(new Fruit("strawberry", "red", new Vector3(Random.Range(-xMax, xMax), 0, Random.Range(-zMax, zMax)), FruitPrefab));
-            Snacks.Add(new Fruit("peach", "pink", new Vector3(Random.Range(-xMax, xMax), 0, Random.Range(-zMax, zMax)), FruitPrefab));
-            Snacks.Add(new Fruit("peach", "pink", new Vector3(Random.Range(-xMax, xMax), 0, Random.Range(-zMax, zMax)), FruitPrefab));
-            Snacks.Add(new Fruit("peach", "pink", new Vector3(Random.Range(-xMax, xMax), 0, Random.Range(-zMax, zMax)), FruitPrefab));
-            Snacks.Add(new Fruit("watermelon", "green", new Vector3(Random.Range(-xMax, xMax), 0, Random.Range(-zMax, zMax)), FruitPrefab));
+            List<Fruit> Snacks = new List<Fruit>
+            {
+                new Fruit("apple", "colorful", new Vector3(Random.Range(-xMax, xMax), 0.5f, Random.Range(-zMax, zMax)), ColorfulApple),
+                new Fruit("mango", "yellow", new Vector3(Random.Range(-xMax, xMax), 0.5f, Random.Range(-zMax, zMax)), FruitPrefab),
+                new Fruit("strawberry", "red", new Vector3(Random.Range(-xMax, xMax), 0.5f, Random.Range(-zMax, zMax)), FruitPrefab),
+                new Fruit("strawberry", "red", new Vector3(Random.Range(-xMax, xMax), 0.5f, Random.Range(-zMax, zMax)), FruitPrefab),
+                new Fruit("peach", "pink", new Vector3(Random.Range(-xMax, xMax), 0.5f, Random.Range(-zMax, zMax)), FruitPrefab),
+                new Fruit("peach", "pink", new Vector3(Random.Range(-xMax, xMax), 0.5f, Random.Range(-zMax, zMax)), FruitPrefab),
+                new Fruit("peach", "pink", new Vector3(Random.Range(-xMax, xMax), 0.5f, Random.Range(-zMax, zMax)), FruitPrefab),
+                new Fruit("watermelon", "green", new Vector3(Random.Range(-xMax, xMax), 0.5f, Random.Range(-zMax, zMax)), FruitPrefab)
+            };
             return Snacks;
         }
+
+        void CheckEatFood(List<Fruit> Snacks)
+        {
+            foreach (Fruit fruit in Snacks)
+            {
+                if (Vector3.Distance(fruit.GetPosition(), snakeNode.GetPosition()) < 0.8f)
+                {
+                    snakeNode.EatFood(fruit);
+                    Snacks.Remove(fruit);
+                    return;
+                }
+            }
+        }
+
+        void CheckVictory()
+        {
+            //Debug.Log(snakeNode.GetGreyBodyCount());
+            //只要灰色的身体数量小于3，我就判他成功
+            if (!victory && Snacks.Count == 0 && snakeNode.GetGreyBodyCount() < 3)
+            {
+                victory = true;
+                snakeNode.Gone();
+                Debug.Log("小蛇变成了七彩艾希，像彩虹一般出现在Hank眼前。");
+            }
+        }
+
     }
 
 }
