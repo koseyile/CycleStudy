@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: a1b32c5386ff84ddfbc3d81b8de41204
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - snakePrefab: {fileID: 4681365414462977051, guid: d50a2fa761465411993212491dd7900e,
+      type: 3}
+  - Apple: {fileID: 8692996864153304011, guid: edacc4d35f23f4474a6ca3f65f29221d, type: 3}
+  - Banana: {fileID: 5031152406483741547, guid: 7f502a06e850c4a73943188702a24452,
+      type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
