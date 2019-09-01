@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SnakeNode
+public class SnakeNode 
 {
     private GameObject ob;
 
@@ -42,7 +42,6 @@ public class SnakeNode
         ob.transform.GetComponent<Renderer>().material.SetFloat("_Effect", 0.0f);
     }
 
-
     //移动和更新位置信息分开，为了让下一个节点可以访问
     public void MoveTo(Vector3 _dest)
     {
@@ -58,10 +57,20 @@ public class SnakeNode
     {
         this.next = _next;
     }
+    
+    public void SetPrevious(SnakeNode _previous)
+    {
+        this.previous = _previous;
+    }
 
     //表现
     public void SetColor(Color _color)
     {
         ob.transform.GetComponent<Renderer>().material.SetColor("_Color", _color);
+    }
+
+    public void SetEffect(float _isEffect)
+    {
+        ob.transform.GetComponent<Renderer>().material.SetFloat("_IsEffect", _isEffect);
     }
 }
