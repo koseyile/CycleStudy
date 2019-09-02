@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace Wupeng
+{
+    
 public enum FRUITKIND
 {
     Watermelon,
@@ -31,4 +34,6 @@ public class Fruit
     {
         GameObject.Destroy(ob);
     }
+}
+
 }

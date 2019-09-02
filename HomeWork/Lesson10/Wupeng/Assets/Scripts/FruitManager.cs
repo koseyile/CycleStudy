@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace Wupeng
+{
+
 public class FruitManager 
 {
     [SerializeField]
@@ -75,4 +78,5 @@ public class FruitManager
 
         return fruits;
     }
+}
 }

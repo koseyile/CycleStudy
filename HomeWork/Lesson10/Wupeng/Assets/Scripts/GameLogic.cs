@@ -1,7 +1,9 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace Wupeng
+{
 public class GameLogic : MonoBehaviour
 {
     private FruitManager fruitManager;
@@ -28,4 +30,5 @@ public class GameLogic : MonoBehaviour
         fruitManager.GenerateFruits();
     }
 
+}
 }

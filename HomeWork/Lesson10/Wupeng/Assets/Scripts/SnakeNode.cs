@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace Wupeng
+{
+
 public class SnakeNode 
 {
     private GameObject ob;
@@ -73,4 +76,5 @@ public class SnakeNode
     {
         ob.transform.GetComponent<Renderer>().material.SetFloat("_IsEffect", _isEffect);
     }
+}
 }
