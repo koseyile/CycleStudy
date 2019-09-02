@@ -1,7 +1,10 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+namespace Wupeng
+{
 public class Snake : SnakeNode
 {
        /*
@@ -263,4 +266,5 @@ public class Snake : SnakeNode
         return this.active;
     }
 
+}
 }

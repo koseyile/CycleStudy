@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace Wupeng
+{
+
 public class SnakeCollision : MonoBehaviour
 {
     private Snake snake;
@@ -14,4 +17,5 @@ public class SnakeCollision : MonoBehaviour
             Destroy(other.gameObject);
         }
     }
+}
 }

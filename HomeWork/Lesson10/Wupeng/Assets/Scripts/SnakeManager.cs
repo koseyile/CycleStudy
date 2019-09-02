@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace Wupeng
+{
+
 public class SnakeManager 
 {
     private  static SnakeManager manager;  //单例
@@ -95,4 +98,5 @@ public class SnakeManager
 
     }
 
+}
 }

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace Wupeng
+{
 public class Control
 {
 
@@ -82,4 +84,5 @@ public class Control
     {
         return direction;
     }
+}
 }
