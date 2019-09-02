@@ -1,195 +1,198 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using BBBB;
 
-// 尝试把SnakeNode Class 写在另外一个cs文件，当指向这个Class时需要在Inspector中拖入？或者find这个Class？。。遂弃。
-public class SnakeNode
-{
-    private GameObject node;
-    private float speed;
-    private Vector3 direction;
-    private float passTime;
+namespace BBBB { 
 
-    static public float xMax = 10.0f - 0.5f;
-    static public float zMax = 10.0f - 0.5f;
-
-    static public int RainbowCount = 0;
-
-    private SnakeNode nextNode;
-
-
-    Renderer rend;
-
-    static bool _ateRainbow;
-
-    static public bool AteRainbow
+    // 尝试把SnakeNode Class 写在另外一个cs文件，当指向这个Class时需要在Inspector中拖入？或者find这个Class？。。遂弃。
+    public class SnakeNode
     {
-        get
+        private GameObject node;
+        private float speed;
+        private Vector3 direction;
+        private float passTime;
+
+        static public float xMax = 10.0f - 0.5f;
+        static public float zMax = 10.0f - 0.5f;
+
+        static public int RainbowCount = 0;
+
+        private SnakeNode nextNode;
+
+
+        Renderer rend;
+
+        static bool _ateRainbow;
+
+        static public bool AteRainbow
         {
-            return _ateRainbow;
-        }
-        set {
-            _ateRainbow = value;
-        }
-    }
-
-
-
-    public SnakeNode(GameObject _snakeprefab, Vector3 _pos, Color clr, Texture t)
-    {
-        speed = 1.0f;
-        direction = new Vector3(-1, 0, 0);
-        node = Object.Instantiate(_snakeprefab, _pos, Quaternion.identity);
-        rend = node.GetComponent<Renderer>();
-        rend.material.color = clr;
-        rend.material.mainTexture = t;
-    }
-
-    public void Update()
-    {
-        passTime += Time.deltaTime;
-        if (passTime > 0.2f)
-        {
-            Vector3 newPos = node.transform.position + speed * direction;
-            newPos = BoundaryCheck(newPos);
-            Move(this, newPos);
-            passTime = 0f;
-        }
-    }
-
-    public void Move(SnakeNode nd, Vector3 pos)
-    {
-
-        if (nd == null)
-        {
-        }
-        else
-        {
-            Move(nd.nextNode, nd.node.transform.position);
-            nd.node.transform.position = pos;
-        }
-
-
-    }
-
-    Vector3 BoundaryCheck(Vector3 pos)
-    {
-        if (pos.x > xMax)
-        {
-            pos.x = xMax;
-        }
-        if (pos.x < -xMax)
-        {
-            pos.x = -xMax;
-        }
-        if (pos.z > zMax)
-        {
-            pos.z = zMax;
-        }
-        if (pos.z < -zMax)
-        {
-            pos.z = -zMax;
-        }
-
-        return pos;
-    }
-
-    public void UpdateInput()
-    {
-        if (Input.GetKeyUp(KeyCode.Space))
-        {
-            //EatFood(this, Color.gray);
-        }
-
-        if (Input.GetKeyUp(KeyCode.LeftArrow))
-        {
-            direction = new Vector3(-1, 0, 0);
-
-        }
-
-        if (Input.GetKeyUp(KeyCode.RightArrow))
-        {
-            direction = new Vector3(1, 0, 0);
-
-        }
-
-        if (Input.GetKeyUp(KeyCode.UpArrow))
-        {
-            direction = new Vector3(0, 0, 1);
-
-        }
-
-        if (Input.GetKeyUp(KeyCode.DownArrow))
-        {
-            direction = new Vector3(0, 0, -1);
-
-        }
-    }
-
-    public void EatFood(SnakeNode nd, Color c, Texture t)
-    {
-        if (nd.nextNode == null)
-        {
-            nd.nextNode = new SnakeNode(node, node.transform.position, c, t);
-
-            if (t != null)
+            get
             {
-                RainbowCount += 1;
-                Debug.Log(RainbowCount);
+                return _ateRainbow;
+            }
+            set {
+                _ateRainbow = value;
             }
         }
-        else
+
+
+
+        public SnakeNode(GameObject _snakeprefab, Vector3 _pos, Color clr, Texture t)
         {
-            EatFood(nd.nextNode, c, t);
+            speed = 1.0f;
+            direction = new Vector3(-1, 0, 0);
+            node = Object.Instantiate(_snakeprefab, _pos, Quaternion.identity);
+            rend = node.GetComponent<Renderer>();
+            rend.material.color = clr;
+            rend.material.mainTexture = t;
         }
-    }
 
-    public Vector3 GetPosition()
-    {
-        return node.transform.position;
-    }
-
-    public void DestroySnake()
-    {
-        if(nextNode == null) {
-            Object.Destroy(node);
-            Debug.Log("Destroy!");
-        }
-        else {
-            nextNode.DestroySnake();
-            Object.Destroy(node);
-        }
-    }
-
-}
-
-
-
-public class Fruit
-{
-    private GameObject fruit;
-    bool isRainbow;
-
-    public bool IsRainbow
-    {
-        get
+        public void Update()
         {
-            return isRainbow;
+            passTime += Time.deltaTime;
+            if (passTime > 0.2f)
+            {
+                Vector3 newPos = node.transform.position + speed * direction;
+                newPos = BoundaryCheck(newPos);
+                Move(this, newPos);
+                passTime = 0f;
+            }
         }
-    }
 
-    public Fruit(GameObject _fruitPrefab, Vector3 _pos, bool isR)
+        public void Move(SnakeNode nd, Vector3 pos)
+        {
+
+            if (nd == null)
+            {
+            }
+            else
+            {
+                Move(nd.nextNode, nd.node.transform.position);
+                nd.node.transform.position = pos;
+            }
+
+
+        }
+
+        Vector3 BoundaryCheck(Vector3 pos)
+        {
+            if (pos.x > xMax)
+            {
+                pos.x = xMax;
+            }
+            if (pos.x < -xMax)
+            {
+                pos.x = -xMax;
+            }
+            if (pos.z > zMax)
+            {
+                pos.z = zMax;
+            }
+            if (pos.z < -zMax)
+            {
+                pos.z = -zMax;
+            }
+
+            return pos;
+        }
+
+        public void UpdateInput()
+        {
+            if (Input.GetKeyUp(KeyCode.Space))
+            {
+                //EatFood(this, Color.gray);
+            }
+
+            if (Input.GetKeyUp(KeyCode.LeftArrow))
+            {
+                direction = new Vector3(-1, 0, 0);
+
+            }
+
+            if (Input.GetKeyUp(KeyCode.RightArrow))
+            {
+                direction = new Vector3(1, 0, 0);
+
+            }
+
+            if (Input.GetKeyUp(KeyCode.UpArrow))
+            {
+                direction = new Vector3(0, 0, 1);
+
+            }
+
+            if (Input.GetKeyUp(KeyCode.DownArrow))
+            {
+                direction = new Vector3(0, 0, -1);
+
+            }
+        }
+
+        public void EatFood(SnakeNode nd, Color c, Texture t)
+        {
+            if (nd.nextNode == null)
+            {
+                nd.nextNode = new SnakeNode(node, node.transform.position, c, t);
+
+                if (t != null)
+                {
+                    RainbowCount += 1;
+                    Debug.Log(RainbowCount);
+                }
+            }
+            else
+            {
+                EatFood(nd.nextNode, c, t);
+            }
+        }
+
+        public Vector3 GetPosition()
+        {
+            return node.transform.position;
+        }
+
+        public void DestroySnake()
+        {
+            if(nextNode == null) {
+                Object.Destroy(node);
+                Debug.Log("Destroy!");
+            }
+            else {
+                nextNode.DestroySnake();
+                Object.Destroy(node);
+            }
+        }
+
+    }
+   
+
+    public class Fruit
     {
-        fruit = Object.Instantiate(_fruitPrefab, _pos, Quaternion.identity);
-        isRainbow = isR;
-    }
+        private GameObject fruit;
+        bool isRainbow;
 
-    public Vector3 GetPosition() {
-        return fruit.transform.position;
-    }
+        public bool IsRainbow
+        {
+            get
+            {
+                return isRainbow;
+            }
+        }
 
-    public void ClearFruit() {
-       Object.Destroy(fruit);
+        public Fruit(GameObject _fruitPrefab, Vector3 _pos, bool isR)
+        {
+            fruit = Object.Instantiate(_fruitPrefab, _pos, Quaternion.identity);
+            isRainbow = isR;
+        }
+
+        public Vector3 GetPosition() {
+            return fruit.transform.position;
+        }
+
+        public void ClearFruit() {
+           Object.Destroy(fruit);
+        }
     }
 }
 
@@ -217,8 +220,8 @@ public class L10SnakeGameBaibai : MonoBehaviour
 
     public Texture snakeTexture;
 
-    private SnakeNode snakeNode;
-    private List<Fruit> fruits;
+    private BBBB.SnakeNode snakeNode;
+    private List<BBBB.Fruit> fruits;
     private Vector3[] fruitspos;
 
     private Color[] iniColors;
@@ -241,19 +244,19 @@ public class L10SnakeGameBaibai : MonoBehaviour
         InitiateSnake(iniColors);
 
 
-        fruits = new List<Fruit>();
+        fruits = new List<BBBB.Fruit>();
 
         fruitspos = new Vector3[8];
-        ScatterFruits(ref fruitspos, SnakeNode.xMax, SnakeNode.zMax);
+        ScatterFruits(ref fruitspos, BBBB.SnakeNode.xMax, BBBB.SnakeNode.zMax);
 
-        fruits.Add(new Fruit(rainbowApple, fruitspos[0], true));
-        fruits.Add(new Fruit(mangoPrefab, fruitspos[1], false));
-        fruits.Add(new Fruit(strawbPrefab, fruitspos[2], false));
-        fruits.Add(new Fruit(strawbPrefab, fruitspos[3], false));
-        fruits.Add(new Fruit(peachPrefab, fruitspos[4], false));
-        fruits.Add(new Fruit(peachPrefab, fruitspos[5], false));
-        fruits.Add(new Fruit(peachPrefab, fruitspos[6], false));
-        fruits.Add(new Fruit(melonPrefab, fruitspos[7], false));
+        fruits.Add(new BBBB.Fruit(rainbowApple, fruitspos[0], true));
+        fruits.Add(new BBBB.Fruit(mangoPrefab, fruitspos[1], false));
+        fruits.Add(new BBBB.Fruit(strawbPrefab, fruitspos[2], false));
+        fruits.Add(new BBBB.Fruit(strawbPrefab, fruitspos[3], false));
+        fruits.Add(new BBBB.Fruit(peachPrefab, fruitspos[4], false));
+        fruits.Add(new BBBB.Fruit(peachPrefab, fruitspos[5], false));
+        fruits.Add(new BBBB.Fruit(peachPrefab, fruitspos[6], false));
+        fruits.Add(new BBBB.Fruit(melonPrefab, fruitspos[7], false));
 
     }
 
@@ -275,7 +278,7 @@ public class L10SnakeGameBaibai : MonoBehaviour
     void InitiateSnake(Color[] colors)
     {
 
-        snakeNode = new SnakeNode(snakePrefab, new Vector3(3, 0.5f, 0), colors[0], null);
+        snakeNode = new BBBB.SnakeNode(snakePrefab, new Vector3(3, 0.5f, 0), colors[0], null);
 
         for (int i = 1; i < colors.Length; i++)
         {
@@ -293,7 +296,7 @@ public class L10SnakeGameBaibai : MonoBehaviour
     }
 
 
-    public void CheckEat(SnakeNode sn, List<Fruit> f)
+    public void CheckEat(BBBB.SnakeNode sn, List<BBBB.Fruit> f)
     {
         for(int i =0; i < f.Count; i++) {
 
@@ -301,7 +304,7 @@ public class L10SnakeGameBaibai : MonoBehaviour
 
             if (dis <= 1.5f)
             {
-                if (SnakeNode.AteRainbow == true)
+                if (BBBB.SnakeNode.AteRainbow == true)
                 {
                     sn.EatFood(sn, Color.white, snakeTexture);
                 }
@@ -309,7 +312,7 @@ public class L10SnakeGameBaibai : MonoBehaviour
                 {
                     if (f[i].IsRainbow == true)
                     {
-                        SnakeNode.AteRainbow = true;
+                        BBBB.SnakeNode.AteRainbow = true;
                         // animation
                         sn.EatFood(sn, Color.white, snakeTexture);
                     }
@@ -329,16 +332,16 @@ public class L10SnakeGameBaibai : MonoBehaviour
     }
 
     // 判断现在SnakeNode Class时，自己destroy自己的GameObject成员，就会Exception。。是为什么呢？
-    public void CheckSeven(SnakeNode sn)
+    public void CheckSeven(BBBB.SnakeNode sn)
     {
 
-        if (SnakeNode.RainbowCount == 7)
+        if (BBBB.SnakeNode.RainbowCount == 7)
         {
             GameWin = true;
             sn.DestroySnake();
             Debug.Log("小蛇变成了七彩艾希，像彩虹一般出现在Hank眼前。");
 
-            SnakeNode.RainbowCount = 0;
+            BBBB.SnakeNode.RainbowCount = 0;
         }
     }
 
