@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
+namespace Wuwu
+{ 
 //一开始以为要创造3个cube，然后就不知道怎么让他们一起动了，因为上下左右的时候，如果新建head和tail他们move的方向也会不同吧? 如果身体在右侧，我又点了往右的方向又怎么办呢？
 //我学习amber的方式，创建了3个颜色的color，
 //prefab我理解是一个unity里的物品，但class是虚拟的类，是可以绑定某个prfab，也可以复制很多个的？但是他们产生关系就很晕了
@@ -249,4 +250,5 @@ public class Wuwusnake : MonoBehaviour
         snakeNode.UpdateInput();
         SnakeGrow(snakeNode,Snakes);
     }
+}
 }
