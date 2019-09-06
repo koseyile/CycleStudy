@@ -147,20 +147,24 @@ namespace MengMeng
                 if (Mathf.Abs(RotatedAngle) > 90)
                 {
                     Changed = true;
-                    RotatedAngle = 0;
-                    SetFrontNumber((++CardNum).ToString());
-                    SetBackNumber(CardNum.ToString());
+                    RotateAndCount();
                 }
             }
             else
             {
                 if (Mathf.Abs(RotatedAngle) > 180)
                 {
-                    RotatedAngle = 0;
-                    SetFrontNumber((++CardNum).ToString());
-                    SetBackNumber(CardNum.ToString());
+                    RotateAndCount();
                 }
             }
+        }
+        void RotateAndCount()
+        {
+            RotatedAngle = 0;
+            if (++CardNum > 9)
+                CardNum = 0;
+            SetFrontNumber(CardNum.ToString());
+            SetBackNumber(CardNum.ToString());
         }
     }
 }
