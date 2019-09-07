@@ -101,6 +101,14 @@ namespace WuPeng
         public void SetSpeed(float _speed)
         {
             this.m_speed = _speed;
+            this.m_rotateTime = 360 / m_speed;
+            this.m_rotatetimer = this.m_rotateTime;
+        }
+
+        public void SetTimeUnit(float _timeUnit)
+        {
+            this.m_timeUnit = _timeUnit;
+            this.m_timer = m_timeUnit;
         }
     }
 }

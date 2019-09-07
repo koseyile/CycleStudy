@@ -130,6 +130,7 @@ namespace WuPeng
         {
             if (m_active)
             {
+
                 m_timer -= Time.deltaTime;
                 if (m_timer < 0.0f)
                 {
