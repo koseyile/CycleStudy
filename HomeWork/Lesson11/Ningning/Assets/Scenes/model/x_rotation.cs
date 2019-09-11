@@ -160,9 +160,9 @@ public class Card_Timer : Card_A
 
         public Card_Timer test;
 
-    
+        Card_Timer[] rectangle = new Card_Timer[600];
 
-    bool a = false;
+        bool a = false;
     float y = 0.5f;
 
 
@@ -189,13 +189,13 @@ public class Card_Timer : Card_A
 
 
         //题目9
-        Card_Timer[] rectangle = new Card_Timer[600];
+        
         float[] RandomSpeed = new float[600];
         int n = 0;
         for(int j=0;j<60;j++)
         {
             for(int k = 0; k < 10; k++) { 
-            RandomSpeed[n] = Random.Range(0, 0.1f);
+            RandomSpeed[n] = Random.Range(1, 5);
             rectangle[n] = new Card_Timer(prefab, RandomSpeed[n], new Vector3(j,k,0), 9);
                 n++;
             }
@@ -261,10 +261,10 @@ public class Card_Timer : Card_A
                 hour2.rotate();
             
             //600个随机速度转动
-            for (int i = 0; i < 60; i++)
+            for (int i = 0; i < 600; i++)
             {
 
-               // rectangle[i].rotate();   //为啥报错呀？？？
+               rectangle[i].rotate();   //为啥报错呀？？？
 
             }
                 
