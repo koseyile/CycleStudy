@@ -208,18 +208,16 @@ public class Card_Timer : Card_A
 
 
     bool b = false;
-    public void Click_test() //点一下转一圈
-    {
-
-        b = true;
         float t = 0;
-        t+= Time.deltaTime;
-        if (t > 1)
-        {
-            b = false;
-
-        }
+        public void Click_test() //点一下转一圈
+    {
+            
+            b = true;
+        
+       
     }
+
+       
     
         public void Click()
         {
@@ -246,7 +244,16 @@ public class Card_Timer : Card_A
         // Update is called once per frame
         void Update()
         {
-        
+            
+            t += Time.deltaTime;
+                if (t > 1)
+                {
+                    b = false;
+                    t = 0;
+
+            }
+           
+
             if (a)
             {
                 
@@ -261,12 +268,12 @@ public class Card_Timer : Card_A
                 hour2.rotate();
             
             //600个随机速度转动
-            for (int i = 0; i < 600; i++)
-            {
+            //for (int i = 0; i < 600; i++)
+            //{
 
-               rectangle[i].rotate();   //为啥报错呀？？？
+            //   rectangle[i].rotate();   //为啥报错呀？？？
 
-            }
+            //}
                 
 
         }
