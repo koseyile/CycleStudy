@@ -10,7 +10,7 @@ namespace ZCY
         public void ModuleInit()
         {
             INumberObject iNumberObj = GameFramework.singleton.getGameRender().CreateObject(RenderProtocol.CreateNumberObject) as INumberObject;
-            iNumberObj.setPosition(new Vector3(100, 0, 0));
+            iNumberObj.SetPosition(new Vector3(100, 0, 0));
         }
         public void ModuleDestroy()
         {}

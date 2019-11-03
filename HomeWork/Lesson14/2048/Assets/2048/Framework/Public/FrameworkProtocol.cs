@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 namespace Game2048Framework
 {
     //------------------------------------------------------------Input protocol begin
@@ -19,14 +20,35 @@ namespace Game2048Framework
     //------------------------------------------------------------Render protocol begin
     public enum RenderProtocol
     {
+        //--------------------------------------------------------游戏显示元素对象 begin
         None,
-        CreateNumberObject, //zcy:当传入此参数至IGameRender.CreateObject时，必须返回INumberObject
+        CreateNumberObject,      //zcy:当传入此参数至IGameRender.CreateObject时，必须返回INumberObject
+        CreateCheckBoardObject,  //wup:当传入此参数至IGameRender.CreateObject时，必须返回ICheckBoardObject,表示创建一个棋盘对象
+        CreateUIObject,          //wup:当传入此参数至IGameObject.CreateObject时，必须返回IUIObject,表示创建一个UI
+        //--------------------------------------------------------游戏显示元素对象 end
     }
 
     public interface INumberObject : IRenderBase //create by zcy
     {
-        void setPosition(Vector3 pos);
-        void setText(string text);
+        void SetPosition(Vector3 pos);
+        void SetText(string text);
+        void SetColor(Color color);
+    }
+
+    //wup: GameRender模块在接受RenderProtocol中的CreateSpriteObject时，会创建一个ISpriteObject对象
+    public interface ICheckBoardObject : IRenderBase  
+    {
+        void SetSprite(Sprite sprite);
+        void SetPos(Vector3 pos);
+        void SetColor(Color color);
+        void SetScale(Vector3 scale);
+    }
+
+    public interface IUIObject : IRenderBase
+    {
+        void SetSprite(Sprite sprite);
+        void SetPos(Vector3 pos);
+        void SetText(string text);
     }
     //------------------------------------------------------------Render protocol end
 }
