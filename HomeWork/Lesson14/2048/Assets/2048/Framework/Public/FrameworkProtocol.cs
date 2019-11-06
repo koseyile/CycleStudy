@@ -17,6 +17,8 @@ namespace Game2048Framework
     }
     //------------------------------------------------------------Input protocol end
 
+
+
     //------------------------------------------------------------Render protocol begin
     public enum RenderProtocol
     {
@@ -28,6 +30,9 @@ namespace Game2048Framework
         //--------------------------------------------------------游戏显示元素对象 end
     }
 
+
+
+
     public interface INumberObject : IRenderBase //create by zcy
     {
         void SetPosition(Vector3 pos);
@@ -35,7 +40,7 @@ namespace Game2048Framework
         void SetColor(Color color);
     }
 
-    //wup: GameRender模块在接受RenderProtocol中的CreateSpriteObject时，会创建一个ISpriteObject对象
+    //wup: GameRender模块在接受RenderProtocol中的CreateCheckObject时，会创建一个ICheckBoardObject对象
     public interface ICheckBoardObject : IRenderBase  
     {
         void SetSprite(Sprite sprite);
@@ -50,5 +55,8 @@ namespace Game2048Framework
         void SetPos(Vector3 pos);
         void SetText(string text);
     }
+
+
+
     //------------------------------------------------------------Render protocol end
 }

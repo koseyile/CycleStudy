@@ -8,26 +8,28 @@ namespace WP
 {
     public class wupGameInput : IGameInput
     {
-        public wupGameInput() { }
-
-        public void ModuleDestroy()
-        {
-
-        }
+        private InputProtocol currentInputData;
 
         public void ModuleInit()
         {
-
+            currentInputData = InputProtocol.None;
         }
+
+        public void ModuleDestroy()
+        { }
 
         public void ModuleUpdate()
         {
-
+            currentInputData = InputProtocol.None;
+            if (Input.GetKeyUp(KeyCode.RightArrow))
+            {
+                currentInputData = InputProtocol.MoveRight;
+            }
         }
 
         public InputProtocol GetInputData()
         {
-            return InputProtocol.None;
+            return currentInputData;
         }
     }
 
