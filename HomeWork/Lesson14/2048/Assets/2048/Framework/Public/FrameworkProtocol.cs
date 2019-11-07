@@ -24,39 +24,45 @@ namespace Game2048Framework
     {
         //--------------------------------------------------------游戏显示元素对象 begin
         None,
-        CreateNumberObject,      //zcy:当传入此参数至IGameRender.CreateObject时，必须返回INumberObject
-        CreateCheckBoardObject,  //wup:当传入此参数至IGameRender.CreateObject时，必须返回ICheckBoardObject,表示创建一个棋盘对象
-        CreateUIObject,          //wup:当传入此参数至IGameObject.CreateObject时，必须返回IUIObject,表示创建一个UI
+        CreateNumberObject,      //zcy:当传入此参数至IGameRender.CreateObject时，需创建一个INumberObject
+        CreateBackImgObject,     //wup:当传入此参数至IGameRender.CreateObject时，
+        CreateCheckBoardObject,  //wup:当传入此参数至IGameRender.CreateObject时，需创建一个ICheckBoardObject
+        CreateUIObject,          //wup:当传入此参数至IGameObject.CreateObject时，需创建一个IUIObject,表示创建一个UI
+        CreateButtonObject,      //wup:当传入此参数至IGameObject.CreateObject时，需创建一个
         //--------------------------------------------------------游戏显示元素对象 end
     }
 
-
-
-
-    public interface INumberObject : IRenderBase //create by zcy
+    public interface INumberObject : IRenderBase 
     {
-        void SetPosition(Vector3 pos);
-        void SetText(string text);
+        void SetPosition(Vector2 pos);
+        void SetText(int number);
         void SetColor(Color color);
     }
 
-    //wup: GameRender模块在接受RenderProtocol中的CreateCheckObject时，会创建一个ICheckBoardObject对象
+    public interface IBackImgObject : IRenderBase
+    {
+        void SetScore(); //设置显示分数
+        void SetHighScore(); //设置最高分数
+    }
+
     public interface ICheckBoardObject : IRenderBase  
     {
-        void SetSprite(Sprite sprite);
-        void SetPos(Vector3 pos);
+        void SetPos(Vector2 pos);
         void SetColor(Color color);
-        void SetScale(Vector3 scale);
+        void SetScale(Vector2 scale);
     }
 
     public interface IUIObject : IRenderBase
     {
-        void SetSprite(Sprite sprite);
-        void SetPos(Vector3 pos);
+        void SetPos(Vector2 pos);
         void SetText(string text);
     }
 
-
-
+    public interface IButtonObject : IRenderBase
+    {
+        void SetPos(Vector2 pos);
+        void SetText(string text);
+        void SetColor(Color color);
+    }
     //------------------------------------------------------------Render protocol end
 }

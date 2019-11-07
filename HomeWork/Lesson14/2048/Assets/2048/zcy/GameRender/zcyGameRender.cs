@@ -30,6 +30,11 @@ namespace ZCY
         {
             //set text
         }
+
+        public void SetText(int number)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
     public class zcyGameRender : IGameRender
