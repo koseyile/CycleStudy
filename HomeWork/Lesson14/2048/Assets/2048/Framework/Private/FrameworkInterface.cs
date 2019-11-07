@@ -22,12 +22,14 @@ namespace Game2048Framework
 
     public interface IRenderBase
     {
-        
     }
 
     public interface IGameRender : IModule
     {
+        //创建渲染对象
         IRenderBase CreateObject(RenderProtocol renderProtocol);
+
+        //销毁渲染对象
         void DestroyObject(IRenderBase iRenderBase);
     }
 }

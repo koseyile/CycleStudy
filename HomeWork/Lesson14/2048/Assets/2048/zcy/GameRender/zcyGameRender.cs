@@ -15,26 +15,42 @@ namespace ZCY
             //create numberGameObject
         }
 
-        public void setPosition(Vector3 pos)
+        public void SetColor(Color color)
+        {
+
+        }
+
+        public void SetPosition(Vector3 pos)
         {
             Debug.Log(pos);
             //set position
         }
 
-        public void setText(string text)
+        public void SetText(string text)
         {
             //set text
+        }
+
+        public void SetText(int number)
+        {
+            throw new System.NotImplementedException();
         }
     }
 
     public class zcyGameRender : IGameRender
     {
         public void ModuleInit()
-        {}
+        {
+
+        }
         public void ModuleDestroy()
-        {}
+        {
+
+        }
         public void ModuleUpdate()
-        {}
+        {
+
+        }
 
         public IRenderBase CreateObject(RenderProtocol renderProtocol)
         {
@@ -51,7 +67,10 @@ namespace ZCY
 
             return result;
         }
+
         public void DestroyObject(IRenderBase iRenderBase)
-        {}
+        {
+
+        }
     }
 }
