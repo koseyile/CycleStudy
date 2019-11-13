@@ -32,11 +32,27 @@ namespace Game2048Framework
         //--------------------------------------------------------游戏显示元素对象 end
     }
 
-    public interface INumberObject : IRenderBase 
+    public struct NumberIndex           //mengm:数字所在格子的位置，我们约定左下角是[0,0]，右上角是[4,4]
     {
-        void SetPosition(Vector2 pos);
+        public int x;
+        public int y;
+        public NumberIndex(int X, int Y)
+        {
+            x = X;
+            y = Y;
+        }
+    }
+
+    public interface INumberObject : IRenderBase
+    {
+
+        void SetNumberIndex(NumberIndex index);   //mengm: 设置数字所在格子的位置
         void SetText(int number);
         void SetColor(Color color);
+
+        NumberIndex GetNumberIndex();               //mengm: 获取数字所在格子的位置
+        int GetNumber();
+        void MoveToIndex(NumberIndex NumIndex);     //mengm: 把一个数字移动到某一个格子
     }
 
     public interface IBackImgObject : IRenderBase
@@ -45,7 +61,7 @@ namespace Game2048Framework
         void SetHighScore(); //设置最高分数
     }
 
-    public interface ICheckBoardObject : IRenderBase  
+    public interface ICheckBoardObject : IRenderBase
     {
         void SetPos(Vector2 pos);
         void SetColor(Color color);
