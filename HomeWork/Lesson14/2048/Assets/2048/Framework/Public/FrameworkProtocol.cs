@@ -43,7 +43,6 @@ namespace Game2048Framework
     //wup: GameRender模块在接受RenderProtocol中的CreateCheckObject时，会创建一个ICheckBoardObject对象
     public interface ICheckBoardObject : IRenderBase  
     {
-        void SetSprite(Sprite sprite);
         void SetPos(Vector3 pos);
         void SetColor(Color color);
         void SetScale(Vector3 scale);
@@ -51,7 +50,6 @@ namespace Game2048Framework
 
     public interface IUIObject : IRenderBase
     {
-        void SetSprite(Sprite sprite);
         void SetPos(Vector3 pos);
         void SetText(string text);
     }
