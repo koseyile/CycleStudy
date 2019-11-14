@@ -25,7 +25,6 @@ namespace WP
         private UserState userState;
         private int score;
 
-        private ICheckBoardObject  checkBoard; //棋盘背景 
         private INumberObject[,]    numbers;    //4X4 NumberObject数组
 
         public void ModuleInit()
@@ -61,10 +60,6 @@ namespace WP
 
         public void InitGame()
         {
-            //创建棋盘,根据高宽设置棋盘大小和位置
-            checkBoard = GameFramework.singleton.getGameRender().CreateObject(RenderProtocol.CreateCheckBoardObject) as ICheckBoardObject;
-            checkBoard.SetPos(new Vector2(0.0f, 0.0f));
-            checkBoard.SetScale(new Vector2(1.0f, 1.0f));
 
             //创建空Number数组
             numbers = new INumberObject[4, 4];
@@ -96,14 +91,13 @@ namespace WP
         }
 
 
-        public void CreateNumber(int number, int [,] index)
+        public void CreateNumber(int number, NumberIndex index)
         {
             //在棋盘特定位置创建特定数字
             INumberObject numberOb = GameFramework.singleton.getGameRender().CreateObject(RenderProtocol.CreateNumberObject) as INumberObject;
 
-            numberOb.SetText(number);
             Vector2 _pos = new Vector2();//_pos经过index处理
-            numberOb.SetPosition(_pos); 
+            numberOb.SetPosition(index); 
 
             //更新numbers数组
         }

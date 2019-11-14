@@ -9,16 +9,13 @@ namespace mm
     {
         private IGameInput gameInput;
         private IGameRender gameRender;
-        private ICheckBoardObject checkBoardObject;
+
         private List<INumberObject> numberObjectsList;
 
         public void ModuleInit()
         {
             gameInput = GameFramework.singleton.getInput();
             gameRender = GameFramework.singleton.getGameRender();
-
-            //   gameRender.CreateObject(RenderProtocol.CreateBackImgObject);
-            checkBoardObject = gameRender.CreateObject(RenderProtocol.CreateCheckBoardObject) as ICheckBoardObject;
 
             InitGameBoard();
         }
@@ -34,17 +31,18 @@ namespace mm
         {
 
             INumberObject numberObject = gameRender.CreateObject(RenderProtocol.CreateNumberObject) as INumberObject;
-            numberObject.SetNumberIndex(pos);
-            numberObject.SetText(Num);
+            numberObject.SetPosition(pos);
+            numberObject.SetNumber(Num);
             numberObject.SetColor(Color.black);
             numberObjectsList.Add(numberObject);
             return numberObject;
         }
+
         private void MoveNumber(INumberObject numberObject, NumberIndex pos)
         {
-            if (!numberObject.GetNumberIndex().Equals(pos))
+            if (!numberObject.GetPos().Equals(pos))
             {
-                numberObject.MoveToIndex(pos);
+                numberObject.Move(pos);
             }
         }
         private void DestoryNumber(INumberObject numberObject)
@@ -54,7 +52,7 @@ namespace mm
         }
         private void MergeNumber(INumberObject numberObjectA, INumberObject numberObjectB)
         {
-            numberObjectB.SetText(numberObjectB.GetNumber() + numberObjectA.GetNumber());
+            numberObjectB.SetNumber(numberObjectB.GetNumber() + numberObjectA.GetNumber());
             DestoryNumber(numberObjectA);
         }
 
@@ -62,18 +60,20 @@ namespace mm
         {
             foreach (INumberObject Num in numberObjectsList)
             {
-                if (Num.GetNumberIndex().Equals(pos))
+                if (Num.GetPos().Equals(pos))
                 {
                     return Num.GetNumber();
                 }
             }
             return 0;
         }
+
+
         int GetNumber(int x, int y)
         {
             foreach (INumberObject Num in numberObjectsList)
             {
-                if (Num.GetNumberIndex().x == x && Num.GetNumberIndex().y == y)
+                if (Num.GetPos().x == x && Num.GetPos().y == y)
                 {
                     return Num.GetNumber();
                 }
@@ -84,7 +84,7 @@ namespace mm
         {
             foreach (INumberObject numberObject in numberObjectsList)
             {
-                if (numberObject.GetNumberIndex().Equals(new NumberIndex(x, y)))
+                if (numberObject.GetPos().Equals(new NumberIndex(x, y)))
                 {
                     return numberObject;
                 }
@@ -103,15 +103,17 @@ namespace mm
                 }
             }
         }
+
         void MoveUp()
         {
             for (int j = 0; j < numberObjectsList.Count; j++)
             {
                 INumberObject numberObject = numberObjectsList[j];
-                int x = numberObject.GetNumberIndex().x;
-                int y = numberObject.GetNumberIndex().y;
+                int x = numberObject.GetPos().x;
+                int y = numberObject.GetPos().y;
                 int y_max = 4;
-                for (int i = y + 1; i > y_max; i++)
+
+                for (int i = y + 1; i < y_max; i++)
                 {
                     if (GetNumberObject(x, i) == null)
                     {
