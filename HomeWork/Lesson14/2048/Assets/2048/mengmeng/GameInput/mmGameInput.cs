@@ -6,6 +6,7 @@ using Game2048Framework;
 namespace mm
 {
     public class mmGameInput : IGameInput
+    {
         private InputProtocol InputData;
         private Vector2 startPoint;
         private Vector2 endPoint;
