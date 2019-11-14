@@ -21,11 +21,13 @@ namespace WP
 
     public class wupGameCore : IGameCore
     {
+
         private GameState gameState;
         private UserState userState;
         private int score;
 
         private INumberObject[,]    numbers;    //4X4 NumberObject数组
+        private NumberIndex[]       blankIndex;
 
         public void ModuleInit()
         {
@@ -153,6 +155,12 @@ namespace WP
         {
 
         }
+
+        public void Swap(NumberObject number1, NumberObject number2)
+        {
+
+        }
+
 
 
     }

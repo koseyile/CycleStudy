@@ -27,7 +27,7 @@ namespace Game2048Framework
         //-------------------------------------------------------游戏显示元素对象 end
     }
 
-    public struct NumberIndex
+    public struct NumberIndex    //wup:InumberObject对象的位置索引
     {
         public int x;
         public int y;
@@ -39,17 +39,16 @@ namespace Game2048Framework
         }
     }
 
-    public interface INumberObject : IRenderBase //wup
+    public interface INumberObject : IRenderBase //wup：InumberObject 对象接口
     {
-        void SetPosition(NumberIndex pos);
-        void Move(NumberIndex des);
-        void SetNumber(int number);
-        int GetNumber();
-        void SetColor(Color color);
-        NumberIndex GetPos();
+        void SetPosition(NumberIndex pos);       //wup: 设置位置
+        void Move(NumberIndex des);              //wup: 移动位置
+        NumberIndex GetPos();                    //wup: 获取Number位置索引
+        void SetNumber(int number);              //wup: 设置Number数字
+        int GetNumber();                         //wup: 获取Number数字
+        void SetColor(Color color);              //wup: 设置Number颜色 
+        void Reset();                            //wup: 重置Number
     }
-
-
 
     //==========================================================Render protocol end
 }
