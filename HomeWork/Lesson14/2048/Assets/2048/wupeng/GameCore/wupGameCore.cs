@@ -148,7 +148,13 @@ namespace WP
 
         public void NumbersRight()
         {
-
+            //伪代码
+            for ()
+            {
+                Move();
+                Merge();
+                Move();
+            }
         }
 
         public void NumbersLeft()
@@ -156,28 +162,45 @@ namespace WP
 
         }
 
+        //交换完成返回true,未完成返回false
         public bool Swap(INumberObject number1, INumberObject number2)
         {
             Vector2 index1 = number1.GetLastPos();
             Vector2 index2 = number2.GetLastPos();
 
-            bool stillWork1 = MoveNumber(number1, index2, true);
-            bool stillWork2 = MoveNumber(number2, index1, true);
+            bool done1 = MoveNumber(number1, index2, true);
+            bool done2 = MoveNumber(number2, index1, true);
             
-            if (!stillWork1 && !stillWork2)
+            if (done1 && done2)
             {
                 number1.ResetLastPos(index1);
                 number2.ResetLastPos(index2);
-                return false;
+                return true;
             }
-            return true;
+
+            return false;
         }
 
-        public void Merge(INumberObject number1, INumberObject number2, bool complexMove)
+        //合并完成返回true,未完成返回false
+        public bool Merge(INumberObject source, INumberObject dest)
         {
+            Vector2 index_source = source.GetLastPos();
+            Vector2 index_des = dest.GetCurrentPos();
 
+            if (MoveNumber(source, index_des, false))
+            {
+                dest.SetNumber(source.GetNumber() + dest.GetNumber());
+                INumberObject newNumber = GameFramework.singleton.getGameRender().CreateObject(RenderProtocol.CreateNumberObject) as INumberObject;
+
+                newNumber.SetPosition(index_source);
+                newNumber.SetNumber(0);
+                return true;
+            }
+
+            return false;
         }
 
+        //移动完成返回true，未完成返回false
         public bool MoveNumber(INumberObject number, Vector2 pos_dest, bool complexMove)
         {
             Vector2 pos_current = number.GetCurrentPos();
@@ -189,7 +212,7 @@ namespace WP
 
                 number.SetPosition(pos_current);
 
-                return true;
+                return false;
             }
 
             if (!complexMove)
@@ -198,7 +221,7 @@ namespace WP
             }
 
             number.SetPosition(pos_dest);
-            return false;
+            return true;
         }
 
         public float Distance(Vector2 v1, Vector2 v2)
