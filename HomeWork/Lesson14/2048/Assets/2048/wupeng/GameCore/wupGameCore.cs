@@ -16,27 +16,29 @@ namespace WP
     public enum UserState
     {
         PlayerInput,
+        Wait,
         None,
     }
 
     public class wupGameCore : IGameCore
     {
+        private int gameSize = 4;
+        private float speed_move = 0.5f;
+
         private GameState gameState;
         private UserState userState;
         private int score;
 
-        private INumberObject[,]    numbers;    //4X4 NumberObject数组
-
-        private float speed_move;
+        private INumberObject[,] numbers;
+        private Vector2[,] blank;
 
         public void ModuleInit()
         {
-            //初始化游戏状态
             gameState = GameState.None;
             userState = UserState.None;
+            numbers = new INumberObject[gameSize, gameSize];
 
-            //初始化棋盘
-            InitGame();
+
         }
 
         public void ModuleUpdate()
@@ -48,10 +50,6 @@ namespace WP
                 case GameState.Gaming:
                     GamePlay(); //执行游戏逻辑
                     break;
-                case GameState.End:
-                    GameEnd();
-                    gameState = GameState.None;
-                    break;
             }
         }
 
@@ -60,23 +58,36 @@ namespace WP
 
         }
 
-        public void InitGame()
+        public void Begin()
         {
+            for (int i = 0; i < gameSize; i++)
+            {
+                for (int j = 0; j < gameSize; j++)
+                {
+                    numbers[i, j] = GameFramework.singleton.getGameRender().CreateObject(RenderProtocol.CreateNumberObject) as INumberObject;
+                    blank[i, j] = new Vector2(i, j);
+                }
+            }
 
-            //创建空Number数组
-            numbers = new INumberObject[4, 4];
+            Vector2 first = new Vector2(Random.Range(0, 4), Random.Range(0, 4));
+            Vector2 second = new Vector2(Random.Range(0, 4), Random.Range(0, 4)); 
+
+            while (second == first)
+            {
+                second = new Vector2(Random.Range(0, 4), Random.Range(0, 4));
+            }
+
+
+                
 
         }
 
-        public void BeginGame()
-        {
-            //更新游戏状态
-            gameState = GameState.Gaming;
 
-            //随机位置创建最初数字
-            //To Do...
+        public void FillBlank(Vector2)
+        {
 
         }
+
 
         //游戏逻辑
         public void GamePlay()
@@ -84,24 +95,15 @@ namespace WP
 
         }
 
-        //游戏结束：计分，结束动画
-        public void GameEnd()
-        {
 
-            //Render模块生成游戏结束UI
-
-        }
 
 
         public void CreateNumber(int number, Vector2 index)
         {
             //在棋盘特定位置创建特定数字
             INumberObject numberOb = GameFramework.singleton.getGameRender().CreateObject(RenderProtocol.CreateNumberObject) as INumberObject;
-
-            Vector2 _pos = new Vector2();//_pos经过index处理
-            numberOb.SetPosition(index); 
-
-            //更新numbers数组
+            numberOb.SetPosition(index);
+            numberOb.SetNumber(number);
         }
 
         public void ClearNumber(int[,] index)
