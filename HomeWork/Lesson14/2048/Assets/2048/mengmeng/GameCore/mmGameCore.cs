@@ -69,6 +69,10 @@ namespace mm
                 Vector2.MoveTowards(numberObject.GetCurrentPos(), pos, MoveDelta);
                 yield return 0;
             }
+            if(GetNumber(pos) == numberObject.GetNumber())
+            {
+                MergeNumber(numberObject, GetNumberObject(pos));
+            }
         }
         private void DestoryNumber(INumberObject numberObject)
         {
@@ -116,7 +120,17 @@ namespace mm
             }
             return null;
         }
-
+        INumberObject GetNumberObject(Vector2 pos)
+        {
+            foreach (INumberObject numberObject in numberObjectsList)
+            {
+                if (numberObject.GetCurrentPos().Equals(pos))
+                {
+                    return numberObject;
+                }
+            }
+            return null;
+        }
         void InitGameBoard()
         {
             while (numberObjectsList.Count < 2)
@@ -142,14 +156,9 @@ namespace mm
 
                     for (int i = y + 1; i < y_max; i++)     //每次每个数字往上移动一格，如果遇到相同的，就合并
                     {
-                        if (GetNumberObject(x, i) == null)
+                        if (GetNumberObject(x, i) == null|| GetNumber(x, i) == numberObject.GetNumber())
                         {
                             MoveNumber(numberObject, new Vector2(x, i));
-                        }
-                        else if (GetNumber(x, i) == numberObject.GetNumber())
-                        {
-                            MergeNumber(numberObject, GetNumberObject(x, i));
-                            break;
                         }
                     }
                 }
@@ -168,14 +177,9 @@ namespace mm
 
                     for (int i = y - 1; i >= y_min; i--)     //每次每个数字往下移动一格，如果遇到相同的，就合并
                     {
-                        if (GetNumberObject(x, i) == null)
+                        if (GetNumberObject(x, i) == null|| GetNumber(x, i) == numberObject.GetNumber())
                         {
                             MoveNumber(numberObject, new Vector2(x, i));
-                        }
-                        else if (GetNumber(x, i) == numberObject.GetNumber())
-                        {
-                            MergeNumber(numberObject, GetNumberObject(x, i));
-                            break;
                         }
                     }
                 }
@@ -194,14 +198,9 @@ namespace mm
 
                     for (int i = x - 1; i >= x_min; i--)     //每次每个数字往左移动一格，如果遇到相同的，就合并
                     {
-                        if (GetNumberObject(i, y) == null)
+                        if (GetNumberObject(i, y) == null|| GetNumber(i, y) == numberObject.GetNumber())
                         {
                             MoveNumber(numberObject, new Vector2(i, y));
-                        }
-                        else if (GetNumber(i, y) == numberObject.GetNumber())
-                        {
-                            MergeNumber(numberObject, GetNumberObject(i, y));
-                            break;
                         }
                     }
                 }
@@ -220,14 +219,9 @@ namespace mm
 
                     for (int i = y + 1; i < x_max; i++)     //每次每个数字往右移动一格，如果遇到相同的，就合并
                     {
-                        if (GetNumberObject(i, y) == null)
+                        if (GetNumberObject(i, y) == null|| GetNumber(i, y) == numberObject.GetNumber())
                         {
                             MoveNumber(numberObject, new Vector2(i, y));
-                        }
-                        else if (GetNumber(x, i) == numberObject.GetNumber())
-                        {
-                            MergeNumber(numberObject, GetNumberObject(i, y));
-                            break;
                         }
                     }
                 }
