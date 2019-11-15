@@ -21,13 +21,13 @@ namespace WP
 
     public class wupGameCore : IGameCore
     {
-
         private GameState gameState;
         private UserState userState;
         private int score;
 
         private INumberObject[,]    numbers;    //4X4 NumberObject数组
-        private NumberIndex[]       blankIndex;
+
+        private float speed_move;
 
         public void ModuleInit()
         {
@@ -93,7 +93,7 @@ namespace WP
         }
 
 
-        public void CreateNumber(int number, NumberIndex index)
+        public void CreateNumber(int number, Vector2 index)
         {
             //在棋盘特定位置创建特定数字
             INumberObject numberOb = GameFramework.singleton.getGameRender().CreateObject(RenderProtocol.CreateNumberObject) as INumberObject;
@@ -156,13 +156,56 @@ namespace WP
 
         }
 
-        public void Swap(NumberObject number1, NumberObject number2)
+        public bool Swap(INumberObject number1, INumberObject number2)
+        {
+            Vector2 index1 = number1.GetLastPos();
+            Vector2 index2 = number2.GetLastPos();
+
+            bool stillWork1 = MoveNumber(number1, index2, true);
+            bool stillWork2 = MoveNumber(number2, index1, true);
+            
+            if (!stillWork1 && !stillWork2)
+            {
+                number1.ResetLastPos(index1);
+                number2.ResetLastPos(index2);
+                return false;
+            }
+            return true;
+        }
+
+        public void Merge(INumberObject number1, INumberObject number2, bool complexMove)
         {
 
         }
 
+        public bool MoveNumber(INumberObject number, Vector2 pos_dest, bool complexMove)
+        {
+            Vector2 pos_current = number.GetCurrentPos();
+            Vector2 direction = pos_dest - pos_current;
 
+            if (Mathf.Abs(direction.magnitude) > 0.001)
+            {
+                pos_current += direction * speed_move * Time.deltaTime;
 
+                number.SetPosition(pos_current);
+
+                return true;
+            }
+
+            if (!complexMove)
+            {
+                number.ResetLastPos(pos_dest);
+            }
+
+            number.SetPosition(pos_dest);
+            return false;
+        }
+
+        public float Distance(Vector2 v1, Vector2 v2)
+        {
+            Vector2 v3 = v1 - v2;
+            return Mathf.Sqrt(v3.x * v3.x + v3.y + v3.y);
+        }
     }
 
 }
