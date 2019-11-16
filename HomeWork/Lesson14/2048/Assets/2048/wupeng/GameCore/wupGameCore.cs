@@ -177,7 +177,29 @@ namespace WP
         {
             for (int i = 0; i < gameSize; i ++)
             {
-                for (int j = gameSize - 1; j >= 0; j -- )
+                for (int j = gameSize - 2; j >= 0; j -- ) //所有的行元素做位移
+                {
+                    if (numbers[i, j].GetNumber() != 0)
+                    {
+                        int empty = 0;
+                        for (int k = gameSize - 1; k > j; k--)
+                        {
+                            if (numbers[i, k].GetNumber() == 0)
+                            {
+                                empty++;
+                            }
+                        }
+
+                        MoveNumber(numbers[i, j], new Vector2(i, j + empty));
+                        INumberObject zero =  GameFramework.singleton.getGameRender().CreateObject(RenderProtocol.CreateNumberObject) as INumberObject;
+                        zero.SetNumber(0);
+                        zero.SetPosition(new Vector2(i, j));
+                    }
+                    else
+                        continue;
+                }//行元素位移完成
+
+                for (int m = gameSize - 2; )//所有行元素判断合并
                 {
 
                 }
@@ -189,24 +211,7 @@ namespace WP
 
         }
 
-        //交换完成返回true,未完成返回false
-        public bool Swap(INumberObject number1, INumberObject number2)
-        {
-            Vector2 index1 = number1.GetLastPos();
-            Vector2 index2 = number2.GetLastPos();
 
-            bool done1 = MoveNumber(number1, index2, true);
-            bool done2 = MoveNumber(number2, index1, true);
-            
-            if (done1 && done2)
-            {
-                number1.ResetLastPos(index1);
-                number2.ResetLastPos(index2);
-                return true;
-            }
-
-            return false;
-        }
 
         //合并完成返回true,未完成返回false
         public bool Merge(INumberObject source, INumberObject dest)
@@ -214,7 +219,7 @@ namespace WP
             Vector2 index_source = source.GetLastPos();
             Vector2 index_des = dest.GetCurrentPos();
 
-            if (MoveNumber(source, index_des, false))
+            if (MoveNumber(source, index_des))
             {
                 dest.SetNumber(source.GetNumber() + dest.GetNumber());
                 INumberObject newNumber = GameFramework.singleton.getGameRender().CreateObject(RenderProtocol.CreateNumberObject) as INumberObject;
@@ -228,7 +233,7 @@ namespace WP
         }
 
         //移动完成返回true，未完成返回false
-        public bool MoveNumber(INumberObject number, Vector2 pos_dest, bool complexMove)
+        public bool MoveNumber(INumberObject number, Vector2 pos_dest)
         {
             Vector2 pos_current = number.GetCurrentPos();
             Vector2 direction = pos_dest - pos_current;
@@ -241,12 +246,6 @@ namespace WP
 
                 return false;
             }
-
-            if (!complexMove)
-            {
-                number.ResetLastPos(pos_dest);
-            }
-
             number.SetPosition(pos_dest);
             return true;
         }
