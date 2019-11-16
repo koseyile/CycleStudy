@@ -20,6 +20,38 @@ namespace WP
         None,
     }
 
+    public class NumberData    //数据层
+    {
+        public Vector2  index;
+        public int number;
+        public NumberData(int number, Vector2 index)
+        {
+            this.number = number;
+            this.index = index;
+        }
+
+        public void SetIndex(Vector2 index)
+        {
+            this.index = index;
+        }
+
+        public void SetNumber(int number)
+        {
+            this.number = number;
+        }
+
+        public int GetNumber()
+        {
+            return this.number;
+        }
+
+        public Vector2 GetIndex()
+        {
+            return this.index;
+        }
+    }
+
+
     public class wupGameCore : IGameCore
     {
         private int   gameSize = 4;
@@ -30,6 +62,8 @@ namespace WP
         private UserState userState;
 
         private INumberObject[,] numbers;
+
+
         private List<Vector2> blank;
 
         public void ModuleInit()
