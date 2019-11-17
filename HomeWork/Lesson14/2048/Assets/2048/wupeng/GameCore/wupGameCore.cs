@@ -56,13 +56,16 @@ namespace WP
     {
         private int   gameSize = 4;
         private float speed_move = 0.5f;
-        private float waitTime = 0.5f;
+        private float waitTime;
+        private float move1Time;
+        private float mergeTime;
+        private float move2Time;
 
         private GameState gameState;
         private UserState userState;
 
         private INumberObject[,] numbers;
-
+        private NumberData[,] numbers_data;
 
         private List<Vector2> blank;
 
@@ -71,6 +74,11 @@ namespace WP
             gameState = GameState.None;
             userState = UserState.None;
             numbers = new INumberObject[gameSize, gameSize];
+            numbers_data = new NumberData[gameSize, gameSize];
+
+            move1Time = waitTime / 3;
+            mergeTime = waitTime / 3;
+            move2Time = waitTime / 3;
 
             Begin();
         }
@@ -130,6 +138,8 @@ namespace WP
                     numbers[i, j].SetNumber(0);
                     numbers[i, j].SetPosition(new Vector2(i, j));
 
+                    numbers_data[i, j] = new NumberData(0, new Vector2(i, j));
+
                     blank.Add(new Vector2(i, j));
                 }
             }
@@ -139,7 +149,7 @@ namespace WP
             userState = UserState.PlayerInput;
         }
 
-        public void GenarateRandomNumbers()
+        public bool GenarateRandomNumbers()
         {
             int[] nums = { 2, 4 };
 
@@ -149,27 +159,31 @@ namespace WP
 
                 if (index >= 0)
                 {
-                    Vector2 first = blank[index];
+                    Vector2 v = blank[index];
                     blank.RemoveAt(index);
 
+                    int num = nums[Random.Range(0, 1)];
 
-                    INumberObject number = GameFramework.singleton.getGameRender().CreateObject(RenderProtocol.CreateNumberObject) as INumberObject;
+                    numbers[(int)v.x, (int)v.y].SetNumber(num);
+                    RenewNumbersData();
 
-                    number.SetNumber(nums[Random.Range(0, 1)]);
-                    number.SetPosition(first);
                 }
                 else
                 {
                     Debug.Log("There is no space in checkboard! Can't genarate numbers!");
+                    return false;
                 }
             }
+            return true;
         }
 
-        public void CreateNumber(int number, Vector2 index)
+        public INumberObject CreateNumber(int number, Vector2 index)
         {
             INumberObject numberOb = GameFramework.singleton.getGameRender().CreateObject(RenderProtocol.CreateNumberObject) as INumberObject;
             numberOb.SetPosition(index);
             numberOb.SetNumber(number);
+
+            return numberOb;
         }
 
         public void PlayerMove()
@@ -207,36 +221,81 @@ namespace WP
 
         }
 
-        public void NumbersRight() //在此帧中，需要对所有的Number进行计算，并完成动画函数的调用
+        public void NumbersRight() //在此帧中，以数据层计算所有的numbers，并完成动画函数的调用,动画结束后更新numbersdata数据层
         {
-            for (int i = 0; i < gameSize; i ++)
+            for (int i = 0; i < gameSize; i ++) //此帧遍历每一行
             {
-                for (int j = gameSize - 2; j >= 0; j -- ) //所有的行元素做位移
+                bool isMove1Done = false;
+                bool isMergeDone = false;
+                bool isMove2Done = false;
+
+                //位移1
+                while (!isMove1Done)
                 {
-                    if (numbers[i, j].GetNumber() != 0)
+                    bool[] isdone = new bool[gameSize - 2];
+                    int doneNum = 0;
+
+                    for (int j = gameSize - 2; j >= 0; j--) // 此帧遍历该行中的后面的元素
                     {
-                        int empty = 0;
-                        for (int k = gameSize - 1; k > j; k--)
+                        if (numbers_data[i, j].GetNumber() != 0) //用数据层做判断
                         {
-                            if (numbers[i, k].GetNumber() == 0)
+                            int empty = 0;
+
+                            for (int k = gameSize - 1; k > j; k--)
                             {
-                                empty++;
+                                if (numbers_data[i, k].GetNumber() == 0)
+                                {
+                                    empty++;
+                                }
                             }
+
+                            isdone[j] = MoveNumber(numbers, new Vector2(i, j), new Vector2(i, j + empty)); //移动完成以后已经更改了显示层
+                            if (isdone[j])//更新数据层
+                            {
+                                RenewNumbersData(numbers, numbers_data);
+                            }
+                                                        
+                            INumberObject zero = GameFramework.singleton.getGameRender().CreateObject(RenderProtocol.CreateNumberObject) as INumberObject;
+                            zero.SetNumber(0);
+                            zero.SetPosition(new Vector2(i, j));
+
                         }
-
-                        MoveNumber(numbers[i, j], new Vector2(i, j + empty));
-                        INumberObject zero =  GameFramework.singleton.getGameRender().CreateObject(RenderProtocol.CreateNumberObject) as INumberObject;
-                        zero.SetNumber(0);
-                        zero.SetPosition(new Vector2(i, j));
+                        else
+                            continue;
                     }
-                    else
-                        continue;
-                }//行元素位移完成
 
-                for (int m = gameSize - 2; )//所有行元素判断合并
-                {
+                    foreach (bool b in isdone)
+                    {
+                        if (b == true)
+                        {
+                            doneNum += 1;
+                        }
+                    }
+
+                    if (doneNum == gameSize - 2)
+                    {
+                        isMove1Done = true;
+                    }
 
                 }
+
+                //合并
+                while (isMove1Done && !isMergeDone)
+                {
+                    //位移1完成后，合并
+                    for (int m = gameSize - 2; m >= 0; m--)
+                    {
+
+
+
+                    }
+                }
+
+
+
+                //合并完成后，位移2
+
+
             }
         }
 
@@ -247,43 +306,77 @@ namespace WP
 
 
 
-        //合并完成返回true,未完成返回false
-        public bool Merge(INumberObject source, INumberObject dest)
+        //更新数据层
+        public bool RenewNumbersData(INumberObject[,] numbers, NumberData[,] datas)
         {
-            Vector2 index_source = source.GetLastPos();
-            Vector2 index_des = dest.GetCurrentPos();
+            int row1 = numbers.GetLength(0);
+            int col1 = numbers.GetLength(1);
 
-            if (MoveNumber(source, index_des))
+            int row2 = numbers.GetLength(0);
+            int col2 = numbers.GetLength(1);
+
+            if (row1 != row2 && col1 != col2)
             {
-                dest.SetNumber(source.GetNumber() + dest.GetNumber());
-                INumberObject newNumber = GameFramework.singleton.getGameRender().CreateObject(RenderProtocol.CreateNumberObject) as INumberObject;
+                return false;
+            }
+            else
+            {
+                for (int i = 0; i < row1; i++)
+                {
+                    for (int j = 0; j < col2; j++)
+                    {
+                        datas[i, j].SetNumber(numbers[i, j].GetNumber());
+                    }
 
-                newNumber.SetPosition(index_source);
-                newNumber.SetNumber(0);
+                }
                 return true;
+            }                 
+        }
+
+
+        //移动完成返回true，未完成返回false
+        public bool MoveNumber(INumberObject[,] numbers, Vector2 origin, Vector2 dest)
+        {
+            INumberObject current_o = numbers[(int)origin.x, (int)origin.y];
+            INumberObject current_d = numbers[(int)dest.x, (int)dest.y];
+
+            Vector2 pos_current = current_o.GetCurrentPos();
+
+            Vector2 dir_origin = dest - pos_current;
+
+            if (Mathf.Abs(dir_origin.magnitude) > 0.001)
+            {
+                pos_current += dir_origin * speed_move * Time.deltaTime;
+
+                current_o.SetPosition(pos_current);
+
+                return false;
+            }
+            else
+            {
+                current_d.SetPosition(origin);
+                numbers[(int)origin.x, (int)origin.y] = current_d;
+
+                current_o.SetPosition(dest);
+                numbers[(int)dest.x, (int)dest.y] = current_o;
+
+                return true;
+            }
+        }
+
+
+        //合并完成返回true,未完成返回false
+        public bool Merge(INumberObject[,] numbers, Vector2 origion, Vector2 dest)
+        {
+            if (MoveNumber(numbers, origion, dest))
+            {
+                int res = numbers[(int)dest.x, (int)dest.y].GetNumber() + numbers[(int)origion.x, (int)origion.y].GetNumber();
+                numbers[(int)dest.x, (int)dest.y].SetNumber(res);
+                numbers[(int)origion.x, (int)origion.y].SetNumber(0);
             }
 
             return false;
         }
-
-        //移动完成返回true，未完成返回false
-        public bool MoveNumber(INumberObject number, Vector2 pos_dest)
-        {
-            Vector2 pos_current = number.GetCurrentPos();
-            Vector2 direction = pos_dest - pos_current;
-
-            if (Mathf.Abs(direction.magnitude) > 0.001)
-            {
-                pos_current += direction * speed_move * Time.deltaTime;
-
-                number.SetPosition(pos_current);
-
-                return false;
-            }
-            number.SetPosition(pos_dest);
-            return true;
-        }
-
     }
 
 }
