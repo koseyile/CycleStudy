@@ -191,16 +191,16 @@ namespace WP
             switch (GameFramework.singleton.getInput().GetInputData())
             {
                 case InputProtocol.MoveUp:
-                    NumbersUp();
+
                     break;
                 case InputProtocol.MoveDown:
-                    NumbersDown();
+
                     break;
                 case InputProtocol.MoveRight:
-                    NumbersRight();
+
                     break;
                 case InputProtocol.MoveLeft:
-                    NumbersLeft();
+
                     break;
                 default:
                     break;
@@ -208,31 +208,16 @@ namespace WP
 
         }
 
-        public void NumbersUp()
-        {
-
-
-
-
-        }
-
-        public void NumbersDown()
-        {
-
-        }
-
-        public void NumbersRight() //在此帧中，以数据层计算所有的numbers，并完成动画函数的调用,动画结束后更新numbersdata数据层
+        public void NumbersRight() //在此帧中，以数据层计算所有的numbers，进行动画层调用:当每一个动画层number移动或合并结束，更新numbersdata数据层
         {
             for (int i = 0; i < gameSize; i ++) //此帧遍历每一行
             {
                 bool isMove1Done = false;
                 bool isMergeDone = false;
-                bool isMove2Done = false;
 
                 //位移1
                 while (!isMove1Done)
                 {
-                    bool[] isdone = new bool[gameSize - 2];
                     int doneNum = 0;
 
                     for (int j = gameSize - 2; j >= 0; j--) // 此帧遍历该行中的后面的元素
@@ -249,30 +234,18 @@ namespace WP
                                 }
                             }
 
-                            isdone[j] = MoveNumber(numbers, new Vector2(i, j), new Vector2(i, j + empty)); //移动完成以后已经更改了显示层
-                            if (isdone[j])//更新数据层
+                            if (MoveNumber(numbers, new Vector2(i, j), new Vector2(i, j + empty)))//移动完成以后已经更改了显示层
                             {
                                 RenewNumbersData(numbers, numbers_data);
+                                doneNum += 1;
                             }
-                                                        
-                            INumberObject zero = GameFramework.singleton.getGameRender().CreateObject(RenderProtocol.CreateNumberObject) as INumberObject;
-                            zero.SetNumber(0);
-                            zero.SetPosition(new Vector2(i, j));
 
                         }
                         else
-                            continue;
-                    }
-
-                    foreach (bool b in isdone)
-                    {
-                        if (b == true)
-                        {
                             doneNum += 1;
-                        }
                     }
 
-                    if (doneNum == gameSize - 2)
+                    if (doneNum == gameSize - 1)
                     {
                         isMove1Done = true;
                     }
@@ -282,29 +255,68 @@ namespace WP
                 //合并
                 while (isMove1Done && !isMergeDone)
                 {
+                    int doneNum = 0;
+
                     //位移1完成后，合并
                     for (int m = gameSize - 2; m >= 0; m--)
                     {
+                        if (numbers_data[i, m].GetNumber() == numbers_data[i, m + 1].GetNumber())
+                        {
+                            numbers_data[i, m].SetNumber(0);//当合并启动，该位置数据层设置为0
+                            if (Merge(numbers, new Vector2(i, m), new Vector2(i, m + 1)))
+                            {
+                                RenewNumbersData(numbers, numbers_data);
+                                doneNum += 1;
+                            }
+                        }
+                        else
+                            doneNum += 1;
+                    }
 
-
-
+                    if (doneNum == gameSize - 1)
+                    {
+                        isMergeDone = true;
                     }
                 }
 
+                //位移2
+                while (isMergeDone)
+                {
+                    int doneNum = 0;
 
+                    for (int j = gameSize - 2; j >= 0; j--) // 此帧遍历该行中的后面的元素
+                    {
+                        if (numbers_data[i, j].GetNumber() != 0) //用数据层做判断
+                        {
+                            int empty = 0;
 
-                //合并完成后，位移2
+                            for (int k = gameSize - 1; k > j; k--)
+                            {
+                                if (numbers_data[i, k].GetNumber() == 0)
+                                {
+                                    empty++;
+                                }
+                            }
 
+                            if (MoveNumber(numbers, new Vector2(i, j), new Vector2(i, j + empty)))//移动完成以后已经更改了显示层
+                            {
+                                RenewNumbersData(numbers, numbers_data);
+                                doneNum += 1;
+                            }
 
+                        }
+                        else
+                            doneNum += 1;
+                    }
+
+                    if (doneNum == gameSize - 1)
+                    {
+                        isMove1Done = true;
+
+                    }
+                }               
             }
         }
-
-        public void NumbersLeft()
-        {
-
-        }
-
-
 
         //更新数据层
         public bool RenewNumbersData(INumberObject[,] numbers, NumberData[,] datas)
@@ -373,9 +385,12 @@ namespace WP
                 int res = numbers[(int)dest.x, (int)dest.y].GetNumber() + numbers[(int)origion.x, (int)origion.y].GetNumber();
                 numbers[(int)dest.x, (int)dest.y].SetNumber(res);
                 numbers[(int)origion.x, (int)origion.y].SetNumber(0);
+                return true;
             }
-
-            return false;
+            else
+            {
+                return false;
+            }
         }
     }
 
