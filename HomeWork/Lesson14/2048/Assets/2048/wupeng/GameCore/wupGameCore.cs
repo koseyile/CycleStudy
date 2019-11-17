@@ -9,14 +9,13 @@ namespace WP
     {
         //游戏状态
         Gaming,
-        End,
-        None,
-    }
-
-    public enum UserState
-    {
         PlayerInput,
-        Wait,
+        NumberAnimation,
+        NumbersUp,
+        NumbersDown,
+        NumbersLeft,
+        NumbersRighgt,
+        End,
         None,
     }
 
@@ -56,13 +55,14 @@ namespace WP
     {
         private int   gameSize = 4;
         private float speed_move = 0.5f;
-        private float waitTime;
+
         private float move1Time;
         private float mergeTime;
         private float move2Time;
 
         private GameState gameState;
-        private UserState userState;
+        private GameState turn;
+        private GameState numbersState;
 
         private INumberObject[,] numbers;
         private NumberData[,] numbers_data;
@@ -72,13 +72,12 @@ namespace WP
         public void ModuleInit()
         {
             gameState = GameState.None;
-            userState = UserState.None;
+            turn = GameState.None;
+            numbersState = GameState.None;
+
             numbers = new INumberObject[gameSize, gameSize];
             numbers_data = new NumberData[gameSize, gameSize];
-
-            move1Time = waitTime / 3;
-            mergeTime = waitTime / 3;
-            move2Time = waitTime / 3;
+            blank = new List<Vector2>();
 
             Begin();
         }
@@ -103,24 +102,57 @@ namespace WP
         //游戏逻辑
         public void GamePlay()
         {
-            switch (userState)
+            switch (turn)
             {
-                case UserState.Wait:
-                    if (waitTime > 0.0f)
+                case GameState.PlayerInput:
+                    switch (GameFramework.singleton.getInput().GetInputData())
                     {
-                        waitTime -= Time.deltaTime;
-                    }
-                    else
-                    {
-                        userState = UserState.PlayerInput;
-                        waitTime = 0.5f;
+                        case InputProtocol.MoveUp:
+                            numbersState = GameState.NumbersUp;
+                            turn = GameState.NumberAnimation;
+                            break;
+                        case InputProtocol.MoveDown:
+                            numbersState = GameState.NumbersDown;
+                            turn = GameState.NumberAnimation;
+                            break;
+                        case InputProtocol.MoveLeft:
+                            numbersState = GameState.NumbersLeft;
+                            turn = GameState.NumberAnimation;
+                            break;
+                        case InputProtocol.MoveRight:
+                            numbersState = GameState.NumbersRighgt;
+                            turn = GameState.NumberAnimation;
+                            break;
+                        default:
+                            numbersState = GameState.None;
+                            break;
+
+
                     }
                     break;
-                case UserState.PlayerInput:
-                    PlayerMove();
 
+                case GameState.NumberAnimation:
 
+                    switch (numbersState)
+                    {
+                        case GameState.NumbersUp:
+                            break;
+                        case GameState.NumbersDown:
+                            break;
+                        case GameState.NumbersLeft:
+                            break;
+                        case GameState.NumbersRighgt:
+                            if (NumbersRight())
+                            {
+                                turn = GameState.PlayerInput;
+                            }
+                            break;
+                        default:
+                            break;
 
+                    }               
+                    break;
+                default:
                     break;
             }
 
@@ -146,26 +178,37 @@ namespace WP
 
             GenarateRandomNumbers();
 
-            userState = UserState.PlayerInput;
+            turn = GameState.PlayerInput;
         }
 
+        //更新blank, 随机生成数字，更新数据层
         public bool GenarateRandomNumbers()
         {
+            for (int i = 0; i < gameSize; i ++)
+            {
+                for (int j = 0; j < gameSize; j ++)
+                {
+                    if (numbers[i, j].GetNumber() == 0)
+                    {
+                        blank.Add(new Vector2(i, j));
+                    }
+                }
+            }
+
             int[] nums = { 2, 4 };
 
             for (int i = 0; i < 2; i ++)
             {            
-                int index = Random.Range(0, blank.Count);
-
-                if (index >= 0)
+                if (blank.Count > 0)
                 {
+                    int index = Random.Range(0, blank.Count);
                     Vector2 v = blank[index];
                     blank.RemoveAt(index);
 
                     int num = nums[Random.Range(0, 1)];
 
                     numbers[(int)v.x, (int)v.y].SetNumber(num);
-                    RenewNumbersData();
+                    RenewNumbersData(numbers, numbers_data);
 
                 }
                 else
@@ -208,8 +251,10 @@ namespace WP
 
         }
 
-        public void NumbersRight() //在此帧中，以数据层计算所有的numbers，进行动画层调用:当每一个动画层number移动或合并结束，更新numbersdata数据层
+        public bool NumbersRight() //在此帧中，以数据层计算所有的numbers，进行动画层调用:当每一个动画层number移动或合并结束，更新numbersdata数据层
         {
+            int allDoneNum = 0;
+
             for (int i = 0; i < gameSize; i ++) //此帧遍历每一行
             {
                 bool isMove1Done = false;
@@ -234,7 +279,7 @@ namespace WP
                                 }
                             }
 
-                            if (MoveNumber(numbers, new Vector2(i, j), new Vector2(i, j + empty)))//移动完成以后已经更改了显示层
+                            if (MoveNumber(numbers, new Vector2(i, j), new Vector2(i, j + empty), speed_move * empty))//移动完成以后已经更改了显示层
                             {
                                 RenewNumbersData(numbers, numbers_data);
                                 doneNum += 1;
@@ -248,6 +293,7 @@ namespace WP
                     if (doneNum == gameSize - 1)
                     {
                         isMove1Done = true;
+                        allDoneNum += gameSize - 1;
                     }
 
                 }
@@ -263,7 +309,7 @@ namespace WP
                         if (numbers_data[i, m].GetNumber() == numbers_data[i, m + 1].GetNumber())
                         {
                             numbers_data[i, m].SetNumber(0);//当合并启动，该位置数据层设置为0
-                            if (Merge(numbers, new Vector2(i, m), new Vector2(i, m + 1)))
+                            if (Merge(numbers, new Vector2(i, m), new Vector2(i, m + 1), speed_move))
                             {
                                 RenewNumbersData(numbers, numbers_data);
                                 doneNum += 1;
@@ -276,6 +322,7 @@ namespace WP
                     if (doneNum == gameSize - 1)
                     {
                         isMergeDone = true;
+                        allDoneNum += gameSize - 1;
                     }
                 }
 
@@ -298,7 +345,7 @@ namespace WP
                                 }
                             }
 
-                            if (MoveNumber(numbers, new Vector2(i, j), new Vector2(i, j + empty)))//移动完成以后已经更改了显示层
+                            if (MoveNumber(numbers, new Vector2(i, j), new Vector2(i, j + empty), speed_move * empty))//移动完成以后已经更改了显示层
                             {
                                 RenewNumbersData(numbers, numbers_data);
                                 doneNum += 1;
@@ -312,10 +359,17 @@ namespace WP
                     if (doneNum == gameSize - 1)
                     {
                         isMove1Done = true;
+                        allDoneNum += gameSize - 1;
 
                     }
                 }               
             }
+
+            if (allDoneNum == (gameSize - 1) * gameSize * 3)
+                return true;
+            else
+                return false;
+
         }
 
         //更新数据层
@@ -347,7 +401,7 @@ namespace WP
 
 
         //移动完成返回true，未完成返回false
-        public bool MoveNumber(INumberObject[,] numbers, Vector2 origin, Vector2 dest)
+        public bool MoveNumber(INumberObject[,] numbers, Vector2 origin, Vector2 dest, float speed)
         {
             INumberObject current_o = numbers[(int)origin.x, (int)origin.y];
             INumberObject current_d = numbers[(int)dest.x, (int)dest.y];
@@ -358,7 +412,7 @@ namespace WP
 
             if (Mathf.Abs(dir_origin.magnitude) > 0.001)
             {
-                pos_current += dir_origin * speed_move * Time.deltaTime;
+                pos_current += dir_origin * speed * Time.deltaTime;
 
                 current_o.SetPosition(pos_current);
 
@@ -378,9 +432,9 @@ namespace WP
 
 
         //合并完成返回true,未完成返回false
-        public bool Merge(INumberObject[,] numbers, Vector2 origion, Vector2 dest)
+        public bool Merge(INumberObject[,] numbers, Vector2 origion, Vector2 dest, float speed)
         {
-            if (MoveNumber(numbers, origion, dest))
+            if (MoveNumber(numbers, origion, dest, speed))
             {
                 int res = numbers[(int)dest.x, (int)dest.y].GetNumber() + numbers[(int)origion.x, (int)origion.y].GetNumber();
                 numbers[(int)dest.x, (int)dest.y].SetNumber(res);
