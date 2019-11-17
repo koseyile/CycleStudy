@@ -58,17 +58,29 @@ namespace WP
             objNumber = GameObject.Instantiate(obj);
         }
 
+        public Vector2 GetCurrentPos()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Vector2 GetLastPos()
+        {
+            throw new System.NotImplementedException();
+        }
+
         public int GetNumber()
         {
             throw new System.NotImplementedException();
         }
 
-        public NumberIndex GetPos()
+
+
+        public void Reset()
         {
             throw new System.NotImplementedException();
         }
 
-        public void Move(NumberIndex des)
+        public void ResetLastPos(Vector2 pos)
         {
             throw new System.NotImplementedException();
         }
@@ -90,17 +102,5 @@ namespace WP
             objNumber.transform.position = _pos;
         }
 
-        public void SetPosition(NumberIndex pos)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void SetText(int number)
-        {
-            //设置数字
-            string text = number.ToString();
-
-            //To Do...
-        }
     }
 }
