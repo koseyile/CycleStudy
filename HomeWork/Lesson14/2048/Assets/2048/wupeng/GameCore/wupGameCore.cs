@@ -53,6 +53,7 @@ namespace WP
 
     public class wupGameCore : IGameCore
     {
+        private RenderProtocol Size = RenderProtocol.X44;
         private int   gameSize = 4;
         private float speed_move = 0.5f;
 
@@ -74,6 +75,19 @@ namespace WP
             gameState = GameState.None;
             turn = GameState.None;
             numbersState = GameState.None;
+
+            switch (Size)
+            {
+                case RenderProtocol.X44:
+                    gameSize = 4;
+                    break;
+                case RenderProtocol.X66:
+                    gameSize = 6;
+                    break;
+                default:
+                    gameSize = 4;
+                    break;
+            }
 
             numbers = new INumberObject[gameSize, gameSize];
             numbers_data = new NumberData[gameSize, gameSize];
@@ -446,6 +460,13 @@ namespace WP
                 return false;
             }
         }
+
+
+        public RenderProtocol GetGameSize()
+        {
+            return this.Size;
+        }
+
     }
 
 }

@@ -9,7 +9,19 @@ namespace WP
 {
     public class wupGameRender : IGameRender
     {
-        public wupGameRender() { }
+        int gameSize;
+        int width;
+        int height;
+
+        public wupGameRender(int w, int h)
+        {
+            this.gameSize = size;
+            this.width = w;
+            this.height = h;
+        }
+
+
+
 
         public IRenderBase CreateObject(RenderProtocol renderProtocol)
         {
@@ -23,12 +35,14 @@ namespace WP
                 case RenderProtocol.CreateNumberObject:
                     renderObject = new NumberObject();
                     break;
-
-
             }
 
             return renderObject;
         }
+
+
+
+
 
         public void DestroyObject(IRenderBase iRenderBase)
         {
@@ -49,6 +63,9 @@ namespace WP
 
     public class NumberObject : INumberObject
     {
+        int number;
+        Vector2 index;
+
         private GameObject objNumber;
         private string numberPath = "";
 
@@ -60,46 +77,38 @@ namespace WP
 
         public Vector2 GetCurrentPos()
         {
-            throw new System.NotImplementedException();
-        }
-
-        public Vector2 GetLastPos()
-        {
-            throw new System.NotImplementedException();
+            return this.index;
         }
 
         public int GetNumber()
         {
-            throw new System.NotImplementedException();
+            return this.number;
         }
 
-
-
-        public void Reset()
+        public void SetColor(Color color)
         {
-            throw new System.NotImplementedException();
-        }
-
-        public void ResetLastPos(Vector2 pos)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void SetColor(Color _color)
-        {
-            //设置数字颜色
-            objNumber.GetComponent<Image>().color = _color;
+            Image img = objNumber.GetComponent<Image>();
+            if (img)
+            {
+                img.color = color;
+            }
         }
 
         public void SetNumber(int number)
         {
-            throw new System.NotImplementedException();
+            if (objNumber)
+            {
+                this.number = number;
+            }
         }
 
-        public void SetPosition(Vector2 _pos)
+        public void SetPosition(Vector2 pos)
         {
-            //设置数字位置
-            objNumber.transform.position = _pos;
+            if (objNumber)
+            {
+                this.index = pos;
+                
+            }
         }
 
     }
