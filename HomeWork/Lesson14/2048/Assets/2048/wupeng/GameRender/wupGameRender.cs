@@ -13,22 +13,17 @@ namespace WP
         int width;
         int height;
 
+        string path_canvas = "canvas";
+        GameObject canvasOb;
+
         public wupGameRender(int w, int h)
         {
-            switch (GameFramework.singleton.getGameCore().GetGameSize())
-            {
-                case RenderProtocol.X44:
-                    gameSize = 4;
-                    break;
-                case RenderProtocol.X66:
-                    gameSize = 6;
-                    break;
-                default:
-                    gameSize = 4;
-                    break;
-            }
+            gameSize = 4;
             this.width = w;
             this.height = h;
+
+            GameObject canv = Resources.Load("canvas") as GameObject;
+            canvasOb = GameObject.Instantiate(canv);
         }
 
 
@@ -42,7 +37,7 @@ namespace WP
                     renderObject = null;
                     break;
                 case RenderProtocol.CreateNumberObject:
-                    renderObject = new NumberObject(gameSize, width, height);
+                    renderObject = new NumberObject(gameSize, width, height, canvasOb);
                     break;
             }
 
@@ -59,6 +54,18 @@ namespace WP
 
         public void ModuleInit()
         {
+            switch (GameFramework.singleton.getGameCore().GetGameSize())
+            {
+                case RenderProtocol.X44:
+                    gameSize = 4;
+                    break;
+                case RenderProtocol.X66:
+                    gameSize = 6;
+                    break;
+                default:
+                    gameSize = 4;
+                    break;
+            }
         }
 
         public void ModuleUpdate()
@@ -76,16 +83,26 @@ namespace WP
         Vector2 index;
 
         private GameObject objNumber;
-        private string numberPath = "";
+        private string numberPath = "number";
 
-        public NumberObject(int size, int width, int height)
+        public NumberObject(int size, int width, int height, GameObject canvasOb)
         {
             this.size = size;
             this.width = width;
-            this.height = width;
+            this.height = height;
 
             GameObject obj = Resources.Load(numberPath) as GameObject;
+
+            Text t = obj.GetComponentInChildren<Text>();
+            Image img = obj.GetComponentInChildren<Image>();
+
+            if (t && img)
+            {
+                //float scale = img
+            }
+
             objNumber = GameObject.Instantiate(obj);
+            objNumber.transform.SetParent(canvasOb.transform);
         }
 
         public Vector2 GetCurrentPos()
@@ -113,15 +130,15 @@ namespace WP
             {
                 this.number = number;
 
-                if (this.objNumber.GetComponent<Text>())
+                if (this.objNumber.GetComponentInChildren<Text>())
                 {
-                    this.objNumber.GetComponent<Text>().text = number.ToString();
+                    this.objNumber.GetComponentInChildren<Text>().text = number.ToString();
                 }
                 else
                 {
                     Debug.Log("设置数字错误：未找到Text组件");
                 }
-                
+
             }
         }
 
@@ -135,10 +152,9 @@ namespace WP
                 int w = this.width / size;
                 int h = this.height / size;
 
-                this.objNumber.transform.position = new Vector3(w / 2 + index.x, h / 2 + index.y, 0);
-
+                this.objNumber.transform.position = new Vector3(w / 2 + index.x * w, h / 2 + index.y * h, 0);
             }
-        }
 
+        }
     }
 }
