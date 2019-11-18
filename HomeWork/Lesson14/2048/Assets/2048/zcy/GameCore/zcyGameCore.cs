@@ -16,5 +16,10 @@ namespace ZCY
         {}
         public void ModuleUpdate()
         {}
+
+        public RenderProtocol GetGameSize()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

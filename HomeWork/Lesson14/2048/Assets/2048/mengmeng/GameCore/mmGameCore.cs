@@ -227,6 +227,11 @@ namespace mm
                 }
             }
         }
+
+        public RenderProtocol GetGameSize()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
 }

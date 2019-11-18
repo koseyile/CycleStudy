@@ -15,15 +15,35 @@ namespace ZCY
             //create numberGameObject
         }
 
+        public Vector2 GetCurrentPos()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public int GetNumber()
+        {
+            throw new System.NotImplementedException();
+        }
+
         public void SetColor(Color color)
         {
 
+        }
+
+        public void SetNumber(int number)
+        {
+            throw new System.NotImplementedException();
         }
 
         public void SetPosition(Vector3 pos)
         {
             Debug.Log(pos);
             //set position
+        }
+
+        public void SetPosition(Vector2 index)
+        {
+            throw new System.NotImplementedException();
         }
 
         public void SetText(string text)
