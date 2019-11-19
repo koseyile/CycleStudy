@@ -83,11 +83,15 @@ namespace WP
             numbers[0, 0].SetNumber(4);
             numbers[0, 1].SetNumber(2);
 
+            numbers[1, 1].SetNumber(2);
+            numbers[1, 2].SetNumber(4);
+
+
 
             RenewBlank();
             //GenerateNumbers();
 
-            waitTime = 4.0f;
+            waitTime = 2.0f;
             wait1 = waitTime / 3;
             wait2 = waitTime / 3;
             wait3 = waitTime / 3;
@@ -131,7 +135,7 @@ namespace WP
                                 }
                             }
 
-                            float speed = 1 / (waitTime / 3) + empty / (waitTime / 3);
+                            float speed = empty / (waitTime / 3);
                             Move(new Vector2(i, j), new Vector2(i, j + empty), speed);
                         }
                     }
