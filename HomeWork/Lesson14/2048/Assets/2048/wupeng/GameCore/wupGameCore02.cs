@@ -24,7 +24,12 @@ namespace WP
         private int size;
         private INumberObject[,] numbers;
         private List<Vector2> blank;
+
         private float waitTime;
+        private float wait1;
+        private float wait2;
+        private float wait3;
+
         private GameState gamestate;
         private GameState playerstate;
 
@@ -75,8 +80,18 @@ namespace WP
                 }
             }
 
+            numbers[0, 0].SetNumber(4);
+            numbers[0, 1].SetNumber(2);
+
+
             RenewBlank();
-            GenerateNumbers();
+            //GenerateNumbers();
+
+            waitTime = 4.0f;
+            wait1 = waitTime / 3;
+            wait2 = waitTime / 3;
+            wait3 = waitTime / 3;
+
         }
 
         public void ModuleDestroy()
@@ -85,6 +100,64 @@ namespace WP
         }
 
         public void ModuleUpdate()
+        {
+            MoveRight();
+        }
+
+
+        public void GamePlay()
+        {
+
+        }
+
+        public void MoveRight()
+        {
+            if (wait1 > 0.0)
+            {
+                wait1 -= Time.deltaTime;
+                for (int i = 0; i < size ; i++)
+                {
+                    for (int j = size - 2; j >= 0; j--)
+                    {
+                        if (numbers[i, j].GetNumber() != 0 )
+                        {
+                            int empty = 0;
+
+                            for (int k = size - 1; k > j; k--)
+                            {
+                                if (numbers[i, k].GetNumber() == 0)
+                                {
+                                    empty++;
+                                }
+                            }
+
+                            float speed = 1 / (waitTime / 3) + empty / (waitTime / 3);
+                            Move(new Vector2(i, j), new Vector2(i, j + empty), speed);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                wait1 = 0.0f;
+            }
+
+
+       
+
+        }
+
+        public void MoveLeft()
+        {
+
+        }
+
+        public void MoveUp()
+        {
+
+        }
+
+        public void MoveDonw()
         {
 
         }
@@ -139,6 +212,11 @@ namespace WP
 
         public bool Move( Vector2 origin, Vector2 dest, float speed)
         {
+            if (origin == dest)
+            {
+                return true;
+            }
+
             INumberObject number = numbers[(int)origin.x, (int)origin.y];
 
             if ((dest - number.GetCurrentPos()).sqrMagnitude > 0.005)
@@ -160,6 +238,11 @@ namespace WP
 
         public bool Merge( Vector2 origin, Vector2 dest, float speed)
         {
+            if (origin == dest)
+            {
+                return true;
+            }
+
             INumberObject number = numbers[(int)origin.x, (int)origin.y];
             if ((dest - number.GetCurrentPos()).sqrMagnitude > 0.005)
             {

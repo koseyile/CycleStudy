@@ -79,6 +79,7 @@ namespace WP
                     if (numbers_data[i, j] == null)
                     {
                         DestroyObject(numbers[i, j].objNumber);
+                        Debug.Log("销毁");
                     }
                     else
                     {
@@ -173,7 +174,7 @@ namespace WP
                 int w = this.width / size;
                 int h = this.height / size;
 
-                this.objNumber.transform.position = new Vector3(w / 2 + index.x * w, h / 2 + index.y * h, 0);
+                this.objNumber.transform.position = new Vector3(w / 2 + index.y * w, h / 2 + index.x * h, 0);
             }
         }
     }
