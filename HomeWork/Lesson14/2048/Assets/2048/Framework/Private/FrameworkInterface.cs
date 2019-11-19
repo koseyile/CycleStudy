@@ -18,7 +18,7 @@ namespace Game2048Framework
 
     public interface IGameCore : IModule
     {
-
+        INumberObject[,] GetNumbers();
     }
 
     public interface IRenderBase

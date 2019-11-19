@@ -464,6 +464,10 @@ namespace WP
             return this.Size;
         }
 
+        public INumberObject[,] GetNumbers()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
 }

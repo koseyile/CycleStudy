@@ -21,5 +21,10 @@ namespace ZCY
         {
             throw new System.NotImplementedException();
         }
+
+        public INumberObject[,] GetNumbers()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

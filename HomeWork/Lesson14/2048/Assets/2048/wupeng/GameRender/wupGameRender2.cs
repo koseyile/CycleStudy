@@ -1,31 +1,32 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
+using System.Collections;
 using Game2048Framework;
-
+using UnityEngine.UI;
 
 namespace WP
 {
-    public class wupGameRender : MonoBehaviour, IGameRender
+    public class wupGameRender2 : MonoBehaviour, IGameRender
     {
-        
-        int gameSize;
+        int size;
         int width;
         int height;
 
+        INumberObject[,] numbers_data;  //数据层
+        Number[,] numbers;  //渲染层
+
         string path_canvas = "canvas";
         GameObject canvasOb;
-        
-        public wupGameRender(int w, int h)
+
+        public wupGameRender2(int w, int h)
         {
-            gameSize = 4;
+            size = 4;
             this.width = w;
             this.height = h;
 
             GameObject canv = Resources.Load("canvas") as GameObject;
             canvasOb = GameObject.Instantiate(canv);
         }
+
 
         public IRenderBase CreateObject(RenderProtocol renderProtocol)
         {
@@ -37,7 +38,7 @@ namespace WP
                     renderObject = null;
                     break;
                 case RenderProtocol.CreateNumberObject:
-                    renderObject = new NumberObject(gameSize, width, height, canvasOb);
+                    renderObject = new Number(size, width, height, canvasOb);
                     break;
             }
 
@@ -55,28 +56,40 @@ namespace WP
 
         public void ModuleInit()
         {
-            //switch (GameFramework.singleton.getGameCore().GetGameSize())
-            //{
-            //    case RenderProtocol.X44:
-            //        gameSize = 4;
-            //        break;
-            //    case RenderProtocol.X66:
-            //        gameSize = 6;
-            //        break;
-            //    default:
-            //        gameSize = 4;
-            //        break;
-            //}
+            numbers = new Number[size, size];
+            for (int i = 0; i < size; i++)
+            {
+                for (int j = 0; j < size; j++)
+                {
+                    numbers[i, j] = new Number(size, width, height, canvasOb);
+                    numbers[i, j].SetNumber(0);
+                    numbers[i, j].SetPosition(new Vector2(i, j));
+                }
+            }
         }
 
+        //每一帧从数据层获取数据，并更新渲染层
         public void ModuleUpdate()
         {
-
-
+            numbers_data = GameFramework.singleton.getGameCore().GetNumbers();
+            for (int i = 0; i < size; i ++)
+            {
+                for (int j = 0; j < size; j ++)
+                {
+                    if (numbers_data[i, j] == null)
+                    {
+                        DestroyObject(numbers[i, j].objNumber);
+                    }
+                    else
+                    {
+                        numbers[i, j].SetNumber(numbers_data[i, j].GetNumber());
+                        numbers[i, j].SetPosition(numbers_data[i, j].GetCurrentPos());
+                    }
+                }
+            }
         }
     }
-
-    public class NumberObject : INumberObject
+    public class Number : INumberObject
     {
         private int width;
         private int height;
@@ -85,10 +98,10 @@ namespace WP
         int number;
         Vector2 index;
 
-        private GameObject objNumber;
+        public GameObject objNumber;
         private string numberPath = "number";
 
-        public NumberObject(int size, int width, int height, GameObject canvasOb)
+        public Number(int size, int width, int height, GameObject canvasOb)
         {
             this.size = size;
             this.width = width;
@@ -162,7 +175,8 @@ namespace WP
 
                 this.objNumber.transform.position = new Vector3(w / 2 + index.x * w, h / 2 + index.y * h, 0);
             }
-
         }
     }
+
 }
+

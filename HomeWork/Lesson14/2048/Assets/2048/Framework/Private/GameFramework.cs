@@ -67,7 +67,7 @@ namespace Game2048Framework
         {
             theInput.ModuleUpdate();
             theGameCore.ModuleUpdate();
-            //theGameRender.ModuleUpdate();
+            theGameRender.ModuleUpdate();
         }
     }
 
