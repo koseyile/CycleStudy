@@ -24,6 +24,7 @@ namespace WP
             if (Input.GetKeyUp(KeyCode.RightArrow))
             {
                 currentInputData = InputProtocol.MoveRight;
+                Debug.Log("右移");
             }
         }
 

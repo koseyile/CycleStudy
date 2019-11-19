@@ -18,7 +18,7 @@ namespace Game2048Framework
 
     public interface IGameCore : IModule
     {
-        RenderProtocol GetGameSize();
+
     }
 
     public interface IRenderBase

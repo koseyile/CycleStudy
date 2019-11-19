@@ -56,6 +56,8 @@ namespace WP
         private RenderProtocol Size = RenderProtocol.X44;
         private int   gameSize = 4;
         private float speed_move = 0.5f;
+        private float waitTime = 0.6f;
+
 
         private float move1Time;
         private float mergeTime;
@@ -134,7 +136,9 @@ namespace WP
                             turn = GameState.NumberAnimation;
                             break;
                         case InputProtocol.MoveRight:
+                            Debug.Log(1111);
                             numbersState = GameState.NumbersRighgt;
+                            
                             turn = GameState.NumberAnimation;
                             break;
                         default:
@@ -158,7 +162,8 @@ namespace WP
                         case GameState.NumbersRighgt:
                             if (NumbersRight())
                             {
-                                turn = GameState.PlayerInput;
+                                numbersState = GameState.None;
+                                turn = GameState.PlayerInput;         
                             }
                             break;
                         default:
@@ -234,14 +239,6 @@ namespace WP
             return true;
         }
 
-        public INumberObject CreateNumber(int number, Vector2 index)
-        {
-            INumberObject numberOb = GameFramework.singleton.getGameRender().CreateObject(RenderProtocol.CreateNumberObject) as INumberObject;
-            numberOb.SetPosition(index);
-            numberOb.SetNumber(number);
-
-            return numberOb;
-        }
 
         public void PlayerMove()
         {

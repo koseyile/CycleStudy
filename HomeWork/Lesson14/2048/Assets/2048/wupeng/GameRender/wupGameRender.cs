@@ -54,22 +54,24 @@ namespace WP
 
         public void ModuleInit()
         {
-            switch (GameFramework.singleton.getGameCore().GetGameSize())
-            {
-                case RenderProtocol.X44:
-                    gameSize = 4;
-                    break;
-                case RenderProtocol.X66:
-                    gameSize = 6;
-                    break;
-                default:
-                    gameSize = 4;
-                    break;
-            }
+            //switch (GameFramework.singleton.getGameCore().GetGameSize())
+            //{
+            //    case RenderProtocol.X44:
+            //        gameSize = 4;
+            //        break;
+            //    case RenderProtocol.X66:
+            //        gameSize = 6;
+            //        break;
+            //    default:
+            //        gameSize = 4;
+            //        break;
+            //}
         }
 
         public void ModuleUpdate()
         {
+
+
         }
     }
 
@@ -98,7 +100,12 @@ namespace WP
 
             if (t && img)
             {
-                //float scale = img
+                float w = obj.GetComponent<RectTransform>().rect.size.x;
+                w = width / (w * size);
+
+                float s = obj.transform.localScale.x * w;
+
+                obj.transform.localScale.Scale(new Vector3(4, 2, 2));
             }
 
             objNumber = GameObject.Instantiate(obj);
