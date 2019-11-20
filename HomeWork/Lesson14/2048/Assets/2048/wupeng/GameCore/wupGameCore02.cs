@@ -141,7 +141,8 @@ namespace WP
                         case State.NumbersRighgt:
                             if (MoveRight())
                             {
-                                GenerateNumbers();
+                                //GenerateNumbers();
+                                RenewBlank();
                                 numberstate = State.None;
                                 playerstate = State.PlayerInput;
                             }
@@ -149,7 +150,8 @@ namespace WP
                         case State.NumbersLeft:
                             if (MoveLeft())
                             {
-                                GenerateNumbers();
+                                //GenerateNumbers();
+                                RenewBlank();
                                 numberstate = State.None;
                                 playerstate = State.PlayerInput;
                             }
@@ -157,7 +159,8 @@ namespace WP
                         case State.NumbersUp:
                             if (MoveUp())
                             {
-                                GenerateNumbers();
+                                //GenerateNumbers();
+                                RenewBlank();
                                 numberstate = State.None;
                                 playerstate = State.PlayerInput;
                             }
@@ -165,7 +168,8 @@ namespace WP
                         case State.NumbersDown:
                             if (MoveDown())
                             {
-                                GenerateNumbers();
+                                //GenerateNumbers();
+                                RenewBlank();
                                 numberstate = State.None;
                                 playerstate = State.PlayerInput;
                             }
