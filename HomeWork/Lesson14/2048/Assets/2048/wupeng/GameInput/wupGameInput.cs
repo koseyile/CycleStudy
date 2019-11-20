@@ -26,6 +26,21 @@ namespace WP
                 currentInputData = InputProtocol.MoveRight;
                 Debug.Log("右移");
             }
+            if (Input.GetKeyUp(KeyCode.LeftArrow))
+            {
+                currentInputData = InputProtocol.MoveLeft;
+                Debug.Log("左移");
+            }
+            if (Input.GetKeyUp(KeyCode.UpArrow))
+            {
+                currentInputData = InputProtocol.MoveUp;
+                Debug.Log("上移");
+            }
+            if (Input.GetKeyUp(KeyCode.DownArrow))
+            {
+                currentInputData = InputProtocol.MoveDown;
+                Debug.Log("下移");
+            }
         }
 
         public InputProtocol GetInputData()
