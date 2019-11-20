@@ -81,9 +81,9 @@ namespace WP
             }
 
             numbers[0, 0].SetNumber(2);
+            numbers[0, 1].SetNumber(2);
             numbers[0, 2].SetNumber(2);
-            numbers[1, 2].SetNumber(2);
-            numbers[0, 3].SetNumber(2);
+            
 
             RenewBlank();
             //GenerateNumbers();
@@ -120,18 +120,22 @@ namespace WP
                         case InputProtocol.MoveRight:
                             numberstate = State.NumbersRighgt;
                             playerstate = State.PlayerWait;
+                            Debug.Log("右移");
                             break;
                         case InputProtocol.MoveLeft:
                             numberstate = State.NumbersLeft;
                             playerstate = State.PlayerWait;
+                            Debug.Log("左移");
                             break;
                         case InputProtocol.MoveUp:
                             numberstate = State.NumbersUp;
                             playerstate = State.PlayerWait;
+                            Debug.Log("上移");
                             break;
                         case InputProtocol.MoveDown:
                             numberstate = State.NumbersDown;
                             playerstate = State.PlayerWait;
+                            Debug.Log("下移");
                             break;
                     } 
                     break;
@@ -141,8 +145,8 @@ namespace WP
                         case State.NumbersRighgt:
                             if (MoveRight())
                             {
-                                //GenerateNumbers();
                                 RenewBlank();
+                                GenerateNumbers();
                                 numberstate = State.None;
                                 playerstate = State.PlayerInput;
                             }
@@ -150,8 +154,8 @@ namespace WP
                         case State.NumbersLeft:
                             if (MoveLeft())
                             {
-                                //GenerateNumbers();
                                 RenewBlank();
+                                GenerateNumbers();
                                 numberstate = State.None;
                                 playerstate = State.PlayerInput;
                             }
@@ -159,8 +163,8 @@ namespace WP
                         case State.NumbersUp:
                             if (MoveUp())
                             {
-                                //GenerateNumbers();
                                 RenewBlank();
+                                GenerateNumbers();
                                 numberstate = State.None;
                                 playerstate = State.PlayerInput;
                             }
@@ -168,8 +172,8 @@ namespace WP
                         case State.NumbersDown:
                             if (MoveDown())
                             {
-                                //GenerateNumbers();
                                 RenewBlank();
+                                GenerateNumbers();
                                 numberstate = State.None;
                                 playerstate = State.PlayerInput;
                             }
@@ -184,6 +188,14 @@ namespace WP
 
         public bool MoveRight()
         {
+            if (wait1 < 0 && wait2 < 0 && wait3 < 0)
+            {
+                wait1 = waitTime / 3;
+                wait2 = waitTime / 3;
+                wait3 = waitTime / 3;
+                return true;
+            }
+
             float speed_one = 1 / (waitTime / 3);
             if (wait1 > 0.0)
             {
@@ -254,19 +266,20 @@ namespace WP
                     }
                 }
             }
+
+            return false;
+
+        }
+
+        public bool MoveLeft()
+        {
             if (wait1 < 0 && wait2 < 0 && wait3 < 0)
             {
                 wait1 = waitTime / 3;
                 wait2 = waitTime / 3;
                 wait3 = waitTime / 3;
                 return true;
-            }else
-                return false;
-
-        }
-
-        public bool MoveLeft()
-        {
+            }
             float speed_one = 1 / (waitTime / 3);
             if (wait1 > 0.0)
             {
@@ -339,6 +352,12 @@ namespace WP
             }
 
 
+                return false;
+
+        }
+
+        public bool MoveUp()
+        {
             if (wait1 < 0 && wait2 < 0 && wait3 < 0)
             {
                 wait1 = waitTime / 3;
@@ -346,13 +365,7 @@ namespace WP
                 wait3 = waitTime / 3;
                 return true;
             }
-            else
-                return false;
 
-        }
-
-        public bool MoveUp()
-        {
             float speed_one = 1 / (waitTime / 3);
             if (wait1 > 0.0)
             {
@@ -423,20 +436,20 @@ namespace WP
                 }
             }
 
+            return false;
             
+        }
+
+        public bool MoveDown()
+        {
+
             if (wait1 < 0 && wait2 < 0 && wait3 < 0)
             {
                 wait1 = waitTime / 3;
                 wait2 = waitTime / 3;
                 wait3 = waitTime / 3;
                 return true;
-            }else
-                return false;
-
-        }
-
-        public bool MoveDown()
-        {
+            }
             float speed_one = 1 / (waitTime / 3);
             if (wait1 > 0.0)
             {
@@ -510,16 +523,7 @@ namespace WP
 
 
 
-            if (wait1 < 0 && wait2 < 0 && wait3 < 0)
-            {
-                wait1 = 0.0f;
-                wait2 = 0.0f;
-                wait3 = 0.0f;
-                return true;
-            }
-            else
-                return false;
-
+            return false;
 
         }
 

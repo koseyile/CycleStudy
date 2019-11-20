@@ -7,9 +7,9 @@ namespace WP
 {
     public class wupGameRender2 : MonoBehaviour, IGameRender
     {
-        int size;
-        int width;
-        int height;
+        int size = 4;
+        int width = 800;
+        int height = 800;
 
         INumberObject[,] numbers_data;  //数据层
         Number[,] numbers;  //渲染层
@@ -17,11 +17,8 @@ namespace WP
         string path_canvas = "canvas";
         GameObject canvasOb;
 
-        public wupGameRender2(int w, int h)
+        public wupGameRender2()
         {
-            size = 4;
-            this.width = w;
-            this.height = h;
 
             GameObject canv = Resources.Load("canvas") as GameObject;
             canvasOb = GameObject.Instantiate(canv);
@@ -90,6 +87,7 @@ namespace WP
             }
         }
     }
+
     public class Number : INumberObject
     {
         private int width;

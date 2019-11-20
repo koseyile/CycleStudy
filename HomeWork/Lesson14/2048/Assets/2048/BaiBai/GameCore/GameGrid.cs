@@ -5,7 +5,7 @@ using Game2048Framework;
 
 namespace BBHW14 {
 
-    public class GameGrid
+    public class GameGrid 
     {
         private int rowNum;
         private int colNum;
