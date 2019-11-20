@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Game2048Framework;
 
 namespace BBHW14 {
 
@@ -11,10 +11,8 @@ namespace BBHW14 {
         private int colNum;
         private Dictionary<Vector2, GameCell> board;
         private bool gameOver;
-        //private int stepInput;
+        private Vector2 offSet;
 
-        private Dictionary<InputList, Vector2[]> lineHeads;
-        private Dictionary<InputList, Vector2> offset;
 
         // make a game grid of row x col, with "p" initial cells
         public GameGrid(int row, int col, int p)
@@ -27,58 +25,81 @@ namespace BBHW14 {
             InitializeBoard();
             InitializeGame(p);
 
-            this.lineHeads = new Dictionary<InputList, Vector2[]>();
-            SetupLineHeads();
-
-            this.offset = new Dictionary<InputList, Vector2>();
-
             Debug.Log(PrintBoard());
 
         }
 
 
-        private void SetupLineHeads() {
-            InputList up = InputList.UP;
-            InputList down = InputList.DOWN;
-            InputList left = InputList.LEFT;
-            InputList right = InputList.RIGHT;
-
-            Vector2[] upHeads = {new Vector2(0,0), new Vector2(0, 1), new Vector2(0, 2), new Vector2(0, 3)};
-            Vector2[] downHeads = { new Vector2(3, 0), new Vector2(3, 1), new Vector2(3, 2), new Vector2(3, 3) };
-            Vector2[] leftHeads = { new Vector2(0, 0), new Vector2(1, 0), new Vector2(2, 0), new Vector2(3, 0) };
-            Vector2[] rightHeads = { new Vector2(0, 3), new Vector2(1, 3), new Vector2(2, 3), new Vector2(3, 3) };
-            lineHeads.Add(up, upHeads);
-            lineHeads.Add(down, downHeads);
-            lineHeads.Add(left, leftHeads);
-            lineHeads.Add(right, rightHeads);
-
-        }
-
-        enum InputList
+        // line heads 
+        private Vector2[] GetLineHeads(InputProtocol gameInput)
         {
-            UP,
-            DOWN,
-            LEFT,
-            RIGHT,
+
+            switch (gameInput)
+            {
+                case InputProtocol.MoveUp: // UP
+                    Vector2[] upHeads = { new Vector2(0, 0), new Vector2(0, 1), new Vector2(0, 2), new Vector2(0, 3) };
+                    return upHeads;
+                case InputProtocol.MoveDown: // DOWN
+                    Vector2[] downHeads = { new Vector2(3, 0), new Vector2(3, 1), new Vector2(3, 2), new Vector2(3, 3) };
+                    return downHeads;
+                case InputProtocol.MoveLeft: // LEFT
+                    Vector2[] leftHeads = { new Vector2(0, 0), new Vector2(1, 0), new Vector2(2, 0), new Vector2(3, 0) };
+                    return leftHeads;
+                case InputProtocol.MoveRight: // RIGHT
+                    Vector2[] rightHeads = { new Vector2(0, 3), new Vector2(1, 3), new Vector2(2, 3), new Vector2(3, 3) };
+                    return rightHeads;
+                default:
+                    break;
+            }
+
+            return null;
         }
+
+
+
+        // offset
+        private Vector2 GetOffset(InputProtocol gameInput)
+        {
+
+            switch (gameInput)
+            {
+                case InputProtocol.MoveUp: // UP
+                    Vector2 upOFF= new Vector2(1, 0);
+                    return upOFF;
+                case InputProtocol.MoveDown: // DOWN
+                    Vector2 downOFF = new Vector2(-1, 0);
+                    return downOFF;
+                case InputProtocol.MoveLeft: // LEFT
+                    Vector2 leftOFF =  new Vector2(0, 1);
+                    return leftOFF;
+                case InputProtocol.MoveRight: // RIGHT
+                    Vector2 rightOFF =  new Vector2(0, -1);
+                    return rightOFF;
+                default:
+                    break;
+            }
+
+            return new Vector2(0, 0);
+        }
+
 
 
         // input
-        private Vector2[] GetLines(InputList gameInput) {
+        private Vector2[] GetLines(InputProtocol gameInput) {
 
 
             switch (gameInput)
             {
-                case InputList.UP: // UP
+                case InputProtocol.MoveUp: // UP
                     
                     break;
-                case InputList.DOWN: // DOWN
+                case InputProtocol.MoveDown: // DOWN
                     
                     break;
-                case InputList.LEFT: // LEFT
+                case InputProtocol.MoveLeft: // LEFT
                     
                     break;
-                case InputList.RIGHT: // RIGHT
+                case InputProtocol.MoveRight: // RIGHT
                     
                     break;
                 default:
