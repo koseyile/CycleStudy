@@ -30,8 +30,8 @@ namespace WP
         private float wait2;
         private float wait3;
 
-        private GameState gamestate;
-        private GameState playerstate;
+        private State numberstate;
+        private State playerstate;
 
         public class Number : INumberObject
         {
@@ -80,13 +80,10 @@ namespace WP
                 }
             }
 
-            numbers[0, 0].SetNumber(4);
-            numbers[0, 1].SetNumber(2);
-
-            numbers[1, 1].SetNumber(2);
-            numbers[1, 2].SetNumber(4);
-
-
+            numbers[0, 0].SetNumber(2);
+            numbers[0, 2].SetNumber(2);
+            numbers[1, 2].SetNumber(2);
+            numbers[0, 3].SetNumber(2);
 
             RenewBlank();
             //GenerateNumbers();
@@ -95,6 +92,9 @@ namespace WP
             wait1 = waitTime / 3;
             wait2 = waitTime / 3;
             wait3 = waitTime / 3;
+
+            numberstate = State.None;
+            playerstate = State.PlayerInput;
 
         }
 
@@ -105,17 +105,82 @@ namespace WP
 
         public void ModuleUpdate()
         {
-            MoveRight();
+            GamePlay();
         }
-
 
         public void GamePlay()
         {
+            switch (playerstate)
+            {
+                case State.PlayerInput:
+                    switch (GameFramework.singleton.getInput().GetInputData())
+                    {
+                        case InputProtocol.None:
+                            break;
+                        case InputProtocol.MoveRight:
+                            numberstate = State.NumbersRighgt;
+                            playerstate = State.PlayerWait;
+                            break;
+                        case InputProtocol.MoveLeft:
+                            numberstate = State.NumbersLeft;
+                            playerstate = State.PlayerWait;
+                            break;
+                        case InputProtocol.MoveUp:
+                            numberstate = State.NumbersUp;
+                            playerstate = State.PlayerWait;
+                            break;
+                        case InputProtocol.MoveDown:
+                            numberstate = State.NumbersDown;
+                            playerstate = State.PlayerWait;
+                            break;
+                    } 
+                    break;
+                case State.PlayerWait:
+                    switch (numberstate)
+                    {
+                        case State.NumbersRighgt:
+                            if (MoveRight())
+                            {
+                                GenerateNumbers();
+                                numberstate = State.None;
+                                playerstate = State.PlayerInput;
+                            }
+                            break;
+                        case State.NumbersLeft:
+                            if (MoveLeft())
+                            {
+                                GenerateNumbers();
+                                numberstate = State.None;
+                                playerstate = State.PlayerInput;
+                            }
+                            break;
+                        case State.NumbersUp:
+                            if (MoveUp())
+                            {
+                                GenerateNumbers();
+                                numberstate = State.None;
+                                playerstate = State.PlayerInput;
+                            }
+                            break;
+                        case State.NumbersDown:
+                            if (MoveDown())
+                            {
+                                GenerateNumbers();
+                                numberstate = State.None;
+                                playerstate = State.PlayerInput;
+                            }
+                            break;
+                    }
 
+                    break;
+                default:
+                    break;
+            }
         }
 
-        public void MoveRight()
+        public bool MoveRight()
         {
+            float speed_one = 1 / (waitTime / 3);
             if (wait1 > 0.0)
             {
                 wait1 -= Time.deltaTime;
@@ -135,34 +200,322 @@ namespace WP
                                 }
                             }
 
-                            float speed = empty / (waitTime / 3);
-                            Move(new Vector2(i, j), new Vector2(i, j + empty), speed);
+                            Move(new Vector2(i, j), new Vector2(i, j + empty), speed_one * empty);
                         }
                     }
                 }
             }
-            else
+ 
+
+            if (wait1 < 0 && wait2 > 0.0)
             {
-                wait1 = 0.0f;
+                Debug.Log(111);
+                wait2 -= Time.deltaTime;
+                for (int i = 0; i < size; i++)
+                {
+                    for (int j = size - 2; j >= 0; j--)
+                    {
+                        if (numbers[i, j].GetNumber() == numbers[i, j + 1].GetNumber() && numbers[i, j].GetNumber() != 0)
+                        {
+                            Debug.Log("merge:" + i + " , " + j);
+                
+                            Merge(new Vector2(i, j), new Vector2(i, j + 1), speed_one );
+                        }
+                    }
+                }
             }
 
 
-       
+            if (wait2 < 0.0 && wait3 > 0.0)
+            {
+                wait3 -= Time.deltaTime;
+                for (int i = 0; i < size; i++)
+                {
+                    for (int j = size - 2; j >= 0; j--)
+                    {
+                        if (numbers[i, j].GetNumber() != 0)
+                        {
+                            int empty = 0;
+
+                            for (int k = size - 1; k > j; k--)
+                            {
+                                if (numbers[i, k].GetNumber() == 0)
+                                {
+                                    empty++;
+                                }
+                            }
+
+                            Move(new Vector2(i, j), new Vector2(i, j + empty), speed_one * empty);
+                        }
+                    }
+                }
+            }
+            if (wait1 < 0 && wait2 < 0 && wait3 < 0)
+            {
+                wait1 = waitTime / 3;
+                wait2 = waitTime / 3;
+                wait3 = waitTime / 3;
+                return true;
+            }else
+                return false;
 
         }
 
-        public void MoveLeft()
+        public bool MoveLeft()
         {
+            float speed_one = 1 / (waitTime / 3);
+            if (wait1 > 0.0)
+            {
+                wait1 -= Time.deltaTime;
+                for (int i = 0; i < size; i++)
+                {
+                    for (int j = 1; j < size; j++)
+                    {
+                        if (numbers[i, j].GetNumber() != 0)
+                        {
+                            int empty = 0;
+
+                            for (int k = 0; k < j; k++)
+                            {
+                                if (numbers[i, k].GetNumber() == 0)
+                                {
+                                    empty++;
+                                }
+                            }
+
+                            Move(new Vector2(i, j), new Vector2(i, j - empty), speed_one * empty);
+                        }
+                    }
+                }
+            }
+
+
+            if (wait1 < 0 && wait2 > 0.0)
+            {
+                Debug.Log(111);
+                wait2 -= Time.deltaTime;
+                for (int i = 0; i < size; i++)
+                {
+                    for (int j = 1; j < size; j++)
+                    {
+                        if (numbers[i, j].GetNumber() == numbers[i, j - 1].GetNumber() && numbers[i, j].GetNumber() != 0)
+                        {
+                            Debug.Log("merge:" + i + " , " + j);
+
+                            Merge(new Vector2(i, j), new Vector2(i, j - 1), speed_one);
+                        }
+                    }
+                }
+            }
+
+
+            if (wait2 < 0.0 && wait3 > 0.0)
+            {
+                wait3 -= Time.deltaTime;
+                for (int i = 0; i < size; i++)
+                {
+                    for (int j = 1; j < size; j++)
+                    {
+                        if (numbers[i, j].GetNumber() != 0)
+                        {
+                            int empty = 0;
+
+                            for (int k = 0; k < j; k++)
+                            {
+                                if (numbers[i, k].GetNumber() == 0)
+                                {
+                                    empty++;
+                                }
+                            }
+
+                            Move(new Vector2(i, j), new Vector2(i, j - empty), speed_one * empty);
+                        }
+                    }
+                }
+            }
+
+
+            if (wait1 < 0 && wait2 < 0 && wait3 < 0)
+            {
+                wait1 = waitTime / 3;
+                wait2 = waitTime / 3;
+                wait3 = waitTime / 3;
+                return true;
+            }
+            else
+                return false;
 
         }
 
-        public void MoveUp()
+        public bool MoveUp()
         {
+            float speed_one = 1 / (waitTime / 3);
+            if (wait1 > 0.0)
+            {
+                wait1 -= Time.deltaTime;
+                for (int j = 0; j < size; j++)
+                {
+                    for (int i = size - 1; i >=0; i--)
+                    {
+                        if (numbers[i, j].GetNumber() != 0)
+                        {
+                            int empty = 0;
+
+                            for (int k = size - 1; k > i; k--)
+                            {
+                                if (numbers[k, j].GetNumber() == 0)
+                                {
+                                    empty++;
+                                }
+                            }
+
+                            Move(new Vector2(i, j), new Vector2(i + empty, j), speed_one * empty);
+                        }
+                    }
+                }
+            }
+
+
+            if (wait1 < 0 && wait2 > 0.0)
+            {
+                Debug.Log(111);
+                wait2 -= Time.deltaTime;
+                for (int j = 0; j < size; j++)
+                {
+                    for (int i = size - 2; i >= 0; i--)
+                    {
+                        if (numbers[i, j].GetNumber() == numbers[i + 1, j].GetNumber() && numbers[i, j].GetNumber() != 0)
+                        {
+                            Debug.Log("merge:" + i + " , " + j);
+
+                            Merge(new Vector2(i, j), new Vector2(i + 1, j), speed_one);
+                        }
+                    }
+                }
+            }
+
+            if (wait2 < 0.0 && wait3 > 0.0)
+            {
+                wait3 -= Time.deltaTime;
+                for (int j = 0; j < size; j++)
+                {
+                    for (int i = size - 2; i >= 0; i--)
+                    {
+                        if (numbers[i, j].GetNumber() != 0)
+                        {
+                            int empty = 0;
+
+                            for (int k = size - 1; k > i; k--)
+                            {
+                                if (numbers[k, j].GetNumber() == 0)
+                                {
+                                    empty++;
+                                }
+                            }
+
+                            Move(new Vector2(i, j), new Vector2(i + empty, j), speed_one * empty);
+                        }
+                    }
+                }
+            }
+
+            
+            if (wait1 < 0 && wait2 < 0 && wait3 < 0)
+            {
+                wait1 = waitTime / 3;
+                wait2 = waitTime / 3;
+                wait3 = waitTime / 3;
+                return true;
+            }else
+                return false;
 
         }
 
-        public void MoveDonw()
+        public bool MoveDown()
         {
+            float speed_one = 1 / (waitTime / 3);
+            if (wait1 > 0.0)
+            {
+                wait1 -= Time.deltaTime;
+                for (int j = 0; j < size; j++)
+                {
+                    for (int i = 1; i < size; i++)
+                    {
+                        if (numbers[i, j].GetNumber() != 0)
+                        {
+                            int empty = 0;
+
+                            for (int k = 0; k < i; k++)
+                            {
+                                if (numbers[k, j].GetNumber() == 0)
+                                {
+                                    empty++;
+                                }
+                            }
+
+                            Move(new Vector2(i, j), new Vector2(i - empty, j), speed_one * empty);
+                        }
+                    }
+                }
+            }
+
+
+            if (wait1 < 0 && wait2 > 0.0)
+            {
+                Debug.Log(111);
+                wait2 -= Time.deltaTime;
+                for (int j = 0; j < size; j++)
+                {
+                    for (int i = 1; i < size; i++)
+                    {
+                        if (numbers[i, j].GetNumber() == numbers[i - 1, j].GetNumber() && numbers[i, j].GetNumber() != 0)
+                        {
+                            Debug.Log("merge:" + i + " , " + j);
+
+                            Merge(new Vector2(i, j), new Vector2(i - 1, j), speed_one);
+                        }
+                    }
+                }
+            }
+
+
+            if (wait2 < 0.0 && wait3 > 0.0)
+            {
+                wait3 -= Time.deltaTime;
+                for (int j = 0; j < size; j++)
+                {
+                    for (int i = 1; i < size; i++)
+                    {
+                        if (numbers[i, j].GetNumber() != 0)
+                        {
+                            int empty = 0;
+
+                            for (int k = 0; k < i; k++)
+                            {
+                                if (numbers[k, j].GetNumber() == 0)
+                                {
+                                    empty++;
+                                }
+                            }
+
+                            Move(new Vector2(i, j), new Vector2(i - empty, j), speed_one * empty);
+                        }
+                    }
+                }
+            }
+
+
+
+            if (wait1 < 0 && wait2 < 0 && wait3 < 0)
+            {
+                wait1 = 0.0f;
+                wait2 = 0.0f;
+                wait3 = 0.0f;
+                return true;
+            }
+            else
+                return false;
+
 
         }
 
