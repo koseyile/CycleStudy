@@ -9,6 +9,7 @@ namespace Game2048Framework
         public static GameFramework singleton = new GameFramework();
         
         private IGameInput theInput;
+
         private IGameCore theGameCore;
         private IGameRender theGameRender;
         private GameFramework()

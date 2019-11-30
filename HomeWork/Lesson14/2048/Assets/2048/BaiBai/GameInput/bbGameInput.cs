@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Game2048Framework;
 
+namespace BBHW14 {
 
-namespace WP
-{
-    public class wupGameInput : IGameInput
+    public class bbGameInput : IGameInput
     {
         private InputProtocol currentInputData;
 
@@ -20,26 +19,30 @@ namespace WP
 
         public void ModuleUpdate()
         {
+
             currentInputData = InputProtocol.None;
+
             if (Input.GetKeyUp(KeyCode.RightArrow))
             {
                 currentInputData = InputProtocol.MoveRight;
-                //Debug.Log("右移");
+                //Debug.Log("MoveRight");
             }
             if (Input.GetKeyUp(KeyCode.LeftArrow))
             {
                 currentInputData = InputProtocol.MoveLeft;
-                //Debug.Log("左移");
+                //Debug.Log("MoveLeft");
             }
             if (Input.GetKeyUp(KeyCode.UpArrow))
             {
                 currentInputData = InputProtocol.MoveUp;
-                //Debug.Log("上移");
+                //Debug.Log("MoveUp");
             }
             if (Input.GetKeyUp(KeyCode.DownArrow))
             {
                 currentInputData = InputProtocol.MoveDown;
+                //Debug.Log("MoveDown");
             }
+
         }
 
         public InputProtocol GetInputData()
@@ -47,4 +50,6 @@ namespace WP
             return currentInputData;
         }
     }
+
+
 }

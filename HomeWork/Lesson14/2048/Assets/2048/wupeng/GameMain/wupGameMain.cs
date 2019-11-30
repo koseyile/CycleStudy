@@ -10,7 +10,8 @@ public class wupGameMain : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GameFramework.singleton.Init(new wupGameInput(), new wupGameCore(), new wupGameRender());
+
+        GameFramework.singleton.Init(new wupGameInput(), new wupGameCore02(), new wupGameRender2());
     }
 
     // Update is called once per frame
@@ -21,6 +22,6 @@ public class wupGameMain : MonoBehaviour
 
     private void OnDestroy()
     {
-        GameFramework.singleton.Destroy();
+        //GameFramework.singleton.Destroy();
     }
 }
