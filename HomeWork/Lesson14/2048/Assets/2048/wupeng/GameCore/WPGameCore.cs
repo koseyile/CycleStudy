@@ -252,8 +252,10 @@ namespace WP
                         Debug.Log("原" + current.GetCurrentPos().x + " " + current.GetCurrentPos().y + "与" + dest.x + " " + dest.y);
                         if (mergeCount == 1)
                         {
-                            DataMerge(current, dest);//每个数只能Merge一次
-                            mergeCount--;
+                            if (DataMerge(current, dest))//每个数只能Merge一次
+                            {
+                                mergeCount--;
+                            }                         
                         }
 
                         DataMove(current, dest);                      
@@ -297,13 +299,13 @@ namespace WP
         }
 
         //数据层单元Merge
-        public void DataMerge(Number number, Vector2 dest)
+        public bool  DataMerge(Number number, Vector2 dest)
         {
             if (number.GetCurrentPos() == dest ||
                 number.GetNumber() != numbers_data[(int)dest.x, (int)dest.y].GetNumber() ||
                 number.GetNumber() == 0)
             {
-                return;
+                return false;
             }
             else
             {
@@ -320,7 +322,7 @@ namespace WP
                 numbers_data[(int)origin.x, (int)origin.y].SetNumber(0);
                 numbers_data[(int)origin.x, (int)origin.y].SetPosition(origin);
                 
-                return;
+                return true;
             }
         }
 
