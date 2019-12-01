@@ -72,7 +72,7 @@ namespace ZCY
 
         }
 
-        public IRenderBase CreateObject(RenderProtocol renderProtocol)
+        public IRenderBase CreateObject(RenderProtocol renderProtocol, int gameSize)
         {
             IRenderBase result = null;
 

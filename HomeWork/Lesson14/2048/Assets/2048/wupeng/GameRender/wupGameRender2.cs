@@ -25,7 +25,7 @@ namespace WP
         }
 
 
-        public IRenderBase CreateObject(RenderProtocol renderProtocol)
+        public IRenderBase CreateObject(RenderProtocol renderProtocol, int gameSize)
         {
             IRenderBase renderObject = null;
 
@@ -68,23 +68,23 @@ namespace WP
         //每一帧从数据层获取数据，并更新渲染层
         public void ModuleUpdate()
         {
-            numbers_data = GameFramework.singleton.getGameCore().GetNumbers();
-            for (int i = 0; i < size; i ++)
-            {
-                for (int j = 0; j < size; j ++)
-                {
-                    if (numbers_data[i, j] == null)
-                    {
-                        DestroyObject(numbers[i, j].objNumber);
-                        Debug.Log("销毁");
-                    }
-                    else
-                    {
-                        numbers[i, j].SetNumber(numbers_data[i, j].GetNumber());
-                        numbers[i, j].SetPosition(numbers_data[i, j].GetCurrentPos());
-                    }
-                }
-            }
+            //numbers_data = GameFramework.singleton.getGameCore().GetNumbers();
+            //for (int i = 0; i < size; i ++)
+            //{
+            //    for (int j = 0; j < size; j ++)
+            //    {
+            //        if (numbers_data[i, j] == null)
+            //        {
+            //            DestroyObject(numbers[i, j].objNumber);
+            //            Debug.Log("销毁");
+            //        }
+            //        else
+            //        {
+            //            numbers[i, j].SetNumber(numbers_data[i, j].GetNumber());
+            //            numbers[i, j].SetPosition(numbers_data[i, j].GetCurrentPos());
+            //        }
+            //    }
+            //}
         }
     }
 

@@ -44,7 +44,7 @@ namespace mm
         private INumberObject CreateNumber(int Num, Vector2 pos)
         {
 
-            INumberObject numberObject = gameRender.CreateObject(RenderProtocol.CreateNumberObject) as INumberObject;
+            INumberObject numberObject = gameRender.CreateObject(RenderProtocol.CreateNumberObject, 4) as INumberObject;
             numberObject.SetPosition(pos);
             numberObject.SetNumber(Num);
             numberObject.SetColor(Color.black);

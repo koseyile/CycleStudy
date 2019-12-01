@@ -18,7 +18,7 @@ namespace Game2048Framework
 
     public interface IGameCore : IModule
     {
-        INumberObject[,] GetNumbers();
+
     }
 
     public interface IRenderBase
@@ -28,7 +28,7 @@ namespace Game2048Framework
     public interface IGameRender : IModule
     {
         //创建渲染对象
-        IRenderBase CreateObject(RenderProtocol renderProtocol);
+        IRenderBase CreateObject(RenderProtocol renderProtocol, int gameSize);
 
         //销毁渲染对象
         void DestroyObject(IRenderBase iRenderBase);

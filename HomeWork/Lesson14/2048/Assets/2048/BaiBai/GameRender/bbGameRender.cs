@@ -13,7 +13,7 @@ namespace BBHW14 {
 
         public void ModuleInit()
         {
-            GameFramework.singleton.getGameCore().GetNumbers();
+            
         }
         public void ModuleDestroy()
         {
@@ -24,7 +24,7 @@ namespace BBHW14 {
 
         }
 
-        public IRenderBase CreateObject(RenderProtocol renderProtocol)
+        public IRenderBase CreateObject(RenderProtocol renderProtocol, int gameSize)
         {
             IRenderBase result = null;
 

@@ -185,7 +185,7 @@ namespace WP
             {
                 for (int j = 0; j < gameSize; j++)
                 {
-                    numbers[i, j] = GameFramework.singleton.getGameRender().CreateObject(RenderProtocol.CreateNumberObject) as INumberObject;
+                    numbers[i, j] = GameFramework.singleton.getGameRender().CreateObject(RenderProtocol.CreateNumberObject, 4) as INumberObject;
                     numbers[i, j].SetNumber(0);
                     numbers[i, j].SetPosition(new Vector2(i, j));
 

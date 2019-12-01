@@ -27,7 +27,7 @@ namespace WP
             canvasOb = GameObject.Instantiate(canv);
         }
 
-        public IRenderBase CreateObject(RenderProtocol renderProtocol)
+        public IRenderBase CreateObject(RenderProtocol renderProtocol, int gameSize)
         {
             IRenderBase renderObject = null;
 

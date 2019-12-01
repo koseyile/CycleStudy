@@ -79,7 +79,7 @@ namespace BBHW14
 
                 if (board[rndPos.x,rndPos.y] == null)
                 {
-                    INumberObject iNumberObj = GameFramework.singleton.getGameRender().CreateObject(RenderProtocol.CreateNumberObject) as INumberObject;
+                    INumberObject iNumberObj = GameFramework.singleton.getGameRender().CreateObject(RenderProtocol.CreateNumberObject, 4) as INumberObject;
                     iNumberObj.SetPosition(new Vector3(100 * rndPos.x, 100 * rndPos.y, 0));
                     iNumberObj.SetNumber(initVal);
 

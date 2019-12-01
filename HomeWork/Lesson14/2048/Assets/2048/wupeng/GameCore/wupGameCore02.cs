@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Game2048Framework;
 
-
 namespace WP
 {
     public enum State
@@ -22,7 +21,10 @@ namespace WP
     public class wupGameCore02 : IGameCore
     {
         private int size;
-        private INumberObject[,] numbers;
+
+        private INumberObject[,] numbers; //动画层
+        private Number[,] numbers_data; //数据层
+
         private List<Vector2> blank;
 
         private float waitTime;
@@ -67,7 +69,9 @@ namespace WP
         public void ModuleInit()
         {
             size = 4;
-            numbers = new INumberObject[4, 4];
+            numbers = new INumberObject[4, 4];//初始化动画层
+            numbers_data = new Number[4, 4];
+
             blank = new List<Vector2>();
 
             for (int i = 0; i < size; i ++)
