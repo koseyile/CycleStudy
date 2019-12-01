@@ -77,23 +77,7 @@ namespace WP
             }
 
             RenewBlank();
-
-            numbers_data[0, 0].SetNumber(2);
-            numbers_data[0, 1].SetNumber(2);
-            numbers_data[0, 2].SetNumber(2);
-            numbers_data[0, 3].SetNumber(2);
-            //GenerateNumbers(); //在数据层和渲染层生成随机2或4
-
-
-            Debug.Log(numbers_data[3, 0].GetNumber() + " " + numbers_data[3, 1].GetNumber() + " "
-               + numbers_data[3, 2].GetNumber() + " " + numbers_data[3, 3].GetNumber());
-
-            Debug.Log(numbers_data[2, 0].GetNumber() + " " + numbers_data[2, 1].GetNumber() + " " +
-               numbers_data[2, 2].GetNumber() + " " + numbers_data[2, 3].GetNumber());
-            Debug.Log(numbers_data[1, 0].GetNumber() + " " + numbers_data[1, 1].GetNumber() + " " +
-              numbers_data[1, 2].GetNumber() + " " + numbers_data[1, 3].GetNumber());
-            Debug.Log(numbers_data[0, 0].GetNumber() + " " + numbers_data[0, 1].GetNumber() + " " +
-              numbers_data[0, 2].GetNumber() + " " + numbers_data[0, 3].GetNumber());
+            GenerateNumbers(); //在数据层和渲染层生成随机2或4
         }
 
         public void ModuleDestroy()
@@ -137,8 +121,6 @@ namespace WP
                 return false;
             }
 
-            Debug.Log("生成了"+count+"个");
-
             for (int i = 0; i < count; i++)
             {
                 int index = Random.Range((int)0, (int)blank.Count);
@@ -146,15 +128,14 @@ namespace WP
 
                 Vector2 v = blank[index];
 
-                Debug.Log("位置：" + v.x + " " + v.y);
-
                 int num = nums[Random.Range(0, 2)];
 
                 numbers_data[(int)v.x, (int)v.y].SetNumber(num);
 
                 RenewBlank();
-                Debug.Log("blank还剩"+blank.Count);
             }
+
+            ShowData();
 
             return true;
         }
@@ -171,34 +152,34 @@ namespace WP
                         case InputProtocol.MoveRight:
                             numberstate = State.NumbersRighgt;
                             playerstate = State.PlayerWait;
+
                             Debug.Log("右移");
                             MoveRight();
-
-                            Debug.Log(numbers_data[3, 0].GetNumber() + " " + numbers_data[3, 1].GetNumber() + " "
-                                + numbers_data[3, 2].GetNumber() + " " + numbers_data[3, 3].GetNumber());
-
-                            Debug.Log(numbers_data[2, 0].GetNumber() + " " + numbers_data[2, 1].GetNumber() + " " +
-                               numbers_data[2, 2].GetNumber() + " " + numbers_data[2, 3].GetNumber());
-                            Debug.Log(numbers_data[1, 0].GetNumber() + " " + numbers_data[1, 1].GetNumber() + " " +
-                              numbers_data[1, 2].GetNumber() + " " + numbers_data[1, 3].GetNumber());
-                            Debug.Log(numbers_data[0, 0].GetNumber() + " " + numbers_data[0, 1].GetNumber() + " " +
-                              numbers_data[0, 2].GetNumber() + " " + numbers_data[0, 3].GetNumber());
+                            ShowData();
 
                             break;
                         case InputProtocol.MoveLeft:
                             numberstate = State.NumbersLeft;
                             playerstate = State.PlayerWait;
                             Debug.Log("左移");
+                            MoveLeft();
+                            ShowData();
+
                             break;
                         case InputProtocol.MoveUp:
                             numberstate = State.NumbersUp;
                             playerstate = State.PlayerWait;
                             Debug.Log("上移");
+                            MoveUp();
+                            ShowData();
+
                             break;
                         case InputProtocol.MoveDown:
                             numberstate = State.NumbersDown;
                             playerstate = State.PlayerWait;
                             Debug.Log("下移");
+                            MoveDown();
+                            ShowData();
                             break;
                     }
                     break;
@@ -206,7 +187,32 @@ namespace WP
                     switch (numberstate)
                     {
                         case State.NumbersRighgt:
-
+                            //执行动画化To Do...
+                            //动画结束
+                            GenerateNumbers();
+                            numberstate = State.None;
+                            playerstate = State.PlayerInput;
+                            break;
+                        case State.NumbersLeft:
+                            //执行动画化To Do...
+                            //动画结束
+                            GenerateNumbers();
+                            numberstate = State.None;
+                            playerstate = State.PlayerInput;
+                            break;
+                        case State.NumbersUp:
+                            //执行动画化To Do...
+                            //动画结束
+                            GenerateNumbers();
+                            numberstate = State.None;
+                            playerstate = State.PlayerInput;
+                            break;
+                        case State.NumbersDown:
+                            //执行动画化To Do...
+                            //动画结束
+                            GenerateNumbers();
+                            numberstate = State.None;
+                            playerstate = State.PlayerInput;
                             break;
                        
                     }
@@ -217,7 +223,7 @@ namespace WP
             }
         }
 
-        public bool MoveRight()
+        public void MoveRight()
         {
             //先更新数据层，根据数据层再更新动画层
             for (int i = 0; i < size; i++)
@@ -228,28 +234,58 @@ namespace WP
                     DataMoveToEnd(current, "right");
                 }
             }
-
-            return false;
         }
 
-        //数据层：数字按照方向持续向下一个方向左动作：可以合并就合并，不能合并就判断移动，直到不能移动
+        public void MoveLeft()
+        {
+            for (int i = 0; i < size; i++)
+            {
+                for (int j =  1; j < size; j++)
+                {
+                    Number current = numbers_data[i, j];
+                    DataMoveToEnd(current, "left");
+                }
+            }
+        }
+
+        public void MoveUp()
+        {
+            for (int i = 0; i < size; i++)
+            {
+                for (int j = size - 2; j >= 0; j--)
+                {
+                    Number current = numbers_data[j, i];
+                    DataMoveToEnd(current, "up");
+                }
+            }
+        }
+
+        public void MoveDown()
+        {
+            //先更新数据层，根据数据层再更新动画层
+            for (int i = 0; i < size; i++)
+            {
+                for (int j = 1; j < size; j++)
+                {
+                    Number current = numbers_data[j, i];
+                    DataMoveToEnd(current, "down");
+                }
+            }
+        }
+
+        //数据层：单个数字按照方向持续向下一个方向左动作：可以合并就合并，不能合并就判断移动，直到不能移动
         public void DataMoveToEnd(Number current, string orien)
         {
-            switch(orien)
+            int x = (int)current.GetCurrentPos().x;
+            int y = (int)current.GetCurrentPos().y;
+            int mergeCount = 1;
+
+            switch (orien)
             {
                 case "right":
-                    
-                    int x = (int)current.GetCurrentPos().x;
-                    int y = (int)current.GetCurrentPos().y;
-
-                    Debug.Log(current.GetCurrentPos().x + "" + current.GetCurrentPos().y);
-
-                    int mergeCount = 1;
                     for (int i = y; i < size - 1; i ++)
                     {
-                        
-                        Vector2 dest = new Vector2(x, i + 1);
-                        Debug.Log("原" + current.GetCurrentPos().x + " " + current.GetCurrentPos().y + "与" + dest.x + " " + dest.y);
+                        Vector2 dest = new Vector2(x, i + 1);                       
                         if (mergeCount == 1)
                         {
                             if (DataMerge(current, dest))//每个数只能Merge一次
@@ -257,16 +293,53 @@ namespace WP
                                 mergeCount--;
                             }                         
                         }
-
                         DataMove(current, dest);                      
+                    }
+                    break;
+                case "left":
+                    for (int i = y; i > 0; i --)
+                    {
+                        Vector2 dest = new Vector2(x, i - 1);
+                        if (mergeCount == 1)
+                        {
+                            if (DataMerge(current, dest))//每个数只能Merge一次
+                            {
+                                mergeCount--;
+                            }
+                        }
+                        DataMove(current, dest);
+                    }
+                    break;
+                case "up":
+                    for (int i = x; i < size - 1; i++)
+                    {
+                        Vector2 dest = new Vector2(i + 1, y);
+                        if (mergeCount == 1)
+                        {
+                            if (DataMerge(current, dest))//每个数只能Merge一次
+                            {
+                                mergeCount--;
+                            }
+                        }
+                        DataMove(current, dest);
                     }
 
                     break;
-                case "left":
-                    break;
-                case "up":
-                    break;
                 case "down":
+                    //Debug.Log(current.GetCurrentPos().x + "" + current.GetCurrentPos().y);
+                    for (int i = x; i > 0; i --)
+                    {
+                        Vector2 dest = new Vector2(i - 1, y);
+                        //Debug.Log("原" + current.GetCurrentPos().x + " " + current.GetCurrentPos().y + "与" + dest.x + " " + dest.y);
+                        if (mergeCount == 1)
+                        {
+                            if (DataMerge(current, dest))//每个数只能Merge一次
+                            {
+                                mergeCount--;
+                            }
+                        }
+                        DataMove(current, dest);
+                    }
                     break;
             }
         }
@@ -299,7 +372,7 @@ namespace WP
         }
 
         //数据层单元Merge
-        public bool  DataMerge(Number number, Vector2 dest)
+        public bool DataMerge(Number number, Vector2 dest)
         {
             if (number.GetCurrentPos() == dest ||
                 number.GetNumber() != numbers_data[(int)dest.x, (int)dest.y].GetNumber() ||
@@ -309,12 +382,12 @@ namespace WP
             }
             else
             {
-                Debug.Log("merge");
+                //Debug.Log("merge");
                 Vector2 origin = number.GetCurrentPos();
                 number.SetPosition(dest);
                 number.SetNumber(number.GetNumber() + numbers_data[(int)dest.x, (int)dest.y].GetNumber());
 
-                Debug.Log(number.GetNumber() + "+" + numbers_data[(int)dest.x, (int)dest.y].GetNumber());
+                //Debug.Log(number.GetNumber() + "+" + numbers_data[(int)dest.x, (int)dest.y].GetNumber());
 
                 //更新数据层
                 numbers_data[(int)dest.x, (int)dest.y] = number;                
@@ -353,8 +426,6 @@ namespace WP
             }
         }
 
-
-
         //渲染层单元Merge
         public bool Merge(Vector2 origin, Vector2 dest, float speed)
         {
@@ -380,6 +451,20 @@ namespace WP
                 numbers[(int)origin.x, (int)origin.y].SetPosition(origin);
                 return true;
             }
+        }
+
+        public void ShowData()
+        {
+            Debug.Log(numbers_data[3, 0].GetNumber() + " " + numbers_data[3, 1].GetNumber() + " "
+            + numbers_data[3, 2].GetNumber() + " " + numbers_data[3, 3].GetNumber());
+
+            Debug.Log(numbers_data[2, 0].GetNumber() + " " + numbers_data[2, 1].GetNumber() + " " +
+               numbers_data[2, 2].GetNumber() + " " + numbers_data[2, 3].GetNumber());
+            Debug.Log(numbers_data[1, 0].GetNumber() + " " + numbers_data[1, 1].GetNumber() + " " +
+              numbers_data[1, 2].GetNumber() + " " + numbers_data[1, 3].GetNumber());
+            Debug.Log(numbers_data[0, 0].GetNumber() + " " + numbers_data[0, 1].GetNumber() + " " +
+              numbers_data[0, 2].GetNumber() + " " + numbers_data[0, 3].GetNumber());
+            Debug.Log(" ");
         }
     }
 
