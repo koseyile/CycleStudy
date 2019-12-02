@@ -399,60 +399,6 @@ namespace WP
             }
         }
 
-        //渲染层单元移动
-        public bool Move(Vector2 origin, Vector2 dest, float speed)
-        {
-            if (origin == dest)
-            {
-                return true;
-            }
-
-            INumberObject number = numbers[(int)origin.x, (int)origin.y];
-
-            if ((dest - number.GetCurrentPos()).sqrMagnitude > 0.005)
-            {
-                number.SetPosition(number.GetCurrentPos() + speed * (dest - number.GetCurrentPos()).normalized * Time.deltaTime);
-                return false;
-            }
-            else
-            {
-                number.SetPosition(dest);
-                numbers[(int)dest.x, (int)dest.y] = number;
-
-                numbers[(int)origin.x, (int)origin.y] = new Number();
-                numbers[(int)origin.x, (int)origin.y].SetNumber(0);
-                numbers[(int)origin.x, (int)origin.y].SetPosition(origin);
-                return true;
-            }
-        }
-
-        //渲染层单元Merge
-        public bool Merge(Vector2 origin, Vector2 dest, float speed)
-        {
-            if (origin == dest)
-            {
-                return true;
-            }
-
-            INumberObject number = numbers[(int)origin.x, (int)origin.y];
-            if ((dest - number.GetCurrentPos()).sqrMagnitude > 0.005)
-            {
-                number.SetPosition(number.GetCurrentPos() + speed * (dest - number.GetCurrentPos()).normalized * Time.deltaTime);
-                return false;
-            }
-            else
-            {
-                number.SetPosition(dest);
-                number.SetNumber(number.GetNumber() + numbers[(int)dest.x, (int)dest.y].GetNumber());
-                numbers[(int)dest.x, (int)dest.y] = number;
-
-                numbers[(int)origin.x, (int)origin.y] = new Number();
-                numbers[(int)origin.x, (int)origin.y].SetNumber(0);
-                numbers[(int)origin.x, (int)origin.y].SetPosition(origin);
-                return true;
-            }
-        }
-
         public void ShowData()
         {
             Debug.Log(numbers_data[3, 0].GetNumber() + " " + numbers_data[3, 1].GetNumber() + " "
@@ -466,6 +412,21 @@ namespace WP
               numbers_data[0, 2].GetNumber() + " " + numbers_data[0, 3].GetNumber());
             Debug.Log(" ");
         }
+
+        //和数据层比较，移动到相应位置，替换数字
+        public void NumberAnimateRight(INumberObject number)
+        {
+            Vector2 index = number.GetCurrentPos();
+            int num = number.GetNumber();
+
+            int x = (int)index.x;
+            int y = (int)index.y;
+
+
+
+        }
+
+
     }
 
 }
