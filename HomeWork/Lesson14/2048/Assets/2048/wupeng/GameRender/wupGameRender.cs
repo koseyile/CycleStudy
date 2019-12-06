@@ -148,6 +148,7 @@ namespace WP
                 }
 
             }
+           
         }
 
         public void SetPosition(Vector2 index)
@@ -164,5 +165,7 @@ namespace WP
             }
 
         }
+        public void SetIndex(Vector2 index) { }
+        public Vector2 GetIndex() { return new Vector2(); }
     }
 }

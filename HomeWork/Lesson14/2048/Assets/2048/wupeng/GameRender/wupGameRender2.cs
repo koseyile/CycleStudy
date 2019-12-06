@@ -175,6 +175,9 @@ namespace WP
                 this.objNumber.transform.position = new Vector3(w / 2 + index.y * w, h / 2 + index.x * h, 0);
             }
         }
+
+        public void SetIndex(Vector2 index) { }
+        public Vector2 GetIndex() { return new Vector2(); }
     }
 
 }

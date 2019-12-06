@@ -2,241 +2,333 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Game2048Framework;
+using System;
 
 namespace mm
 {
-    public class mmGameCore : MonoBehaviour, IGameCore
+    public class mmGameCore : IGameCore
     {
         private IGameInput gameInput;
         private IGameRender gameRender;
 
-        private List<INumberObject> numberObjectsList;
+        private List<INumberObject> numberObjList = new List<INumberObject>();
+        private NumberData[,] numberTable = new NumberData[4, 4];
+
+
+        static float IndexToPos = 25f;         //元素位置和屏幕坐标的转换，左下角是0,0 右上角是3,3
+        bool bGetInput = true;                  //数字移动时锁定输入
+        static float MoveTime = 0.5f;           //移动时间为0.5秒
+        float CurrentTime = 0;
 
         public void ModuleInit()
         {
             gameInput = GameFramework.singleton.getInput();
             gameRender = GameFramework.singleton.getGameRender();
 
-            InitGameBoard();
+            InitGame();
         }
 
         public void ModuleUpdate()
         {
-            switch(gameInput.GetInputData())
+            if (bGetInput)
             {
-                case InputProtocol.MoveUp:
-                    MoveUp();
-                    break;
-                case InputProtocol.MoveDown:
-                    MoveDown();
-                    break;
-                case InputProtocol.MoveLeft:
-                    MoveLeft();
-                    break;
-                case InputProtocol.MoveRight:
-                    MoveRight();
-                    break;
+                switch (gameInput.GetInputData())
+                {
+                    case InputProtocol.MoveUp:
+                        bGetInput = false;
+                        MoveUp();
+                        break;
+                    case InputProtocol.MoveDown:
+                        bGetInput = false;
+                        MoveDown();
+                        break;
+                    case InputProtocol.MoveLeft:
+                        bGetInput = false;
+                        MoveLeft();
+                        break;
+                    case InputProtocol.MoveRight:
+                        bGetInput = false;
+                        MoveRight();
+                        break;
+                }
             }
+            else
+            {
+                MoveAllNum();
+            }
+
         }
 
         public void ModuleDestroy() { }
 
-        private INumberObject CreateNumber(int Num, Vector2 pos)
+        void InitGame()
         {
-
-            INumberObject numberObject = gameRender.CreateObject(RenderProtocol.CreateNumberObject, 4) as INumberObject;
-            numberObject.SetPosition(pos);
-            numberObject.SetNumber(Num);
-            numberObject.SetColor(Color.black);
-            numberObjectsList.Add(numberObject);
-            return numberObject;
-        }
-
-        private void MoveNumber(INumberObject numberObject, Vector2 pos)
-        {
-            if (!numberObject.GetCurrentPos().Equals(pos))
+            for (int i = 0; i < 4; i++)
             {
-                float MoveTime = 0.5f;
-                float MoveDelta = Vector2.Distance(numberObject.GetCurrentPos(), pos) * Time.deltaTime / MoveTime;
-                StartCoroutine(MoveObj(numberObject, pos, MoveDelta));
-            }
-        }
-        IEnumerator MoveObj(INumberObject numberObject, Vector2 pos, float MoveDelta)
-        {
-            if (!numberObject.GetCurrentPos().Equals(pos))
-            {
-                Vector2 CurrentPos = numberObject.GetCurrentPos();
-                Vector2.MoveTowards(numberObject.GetCurrentPos(), pos, MoveDelta);
-                yield return 0;
-            }
-            if(GetNumber(pos) == numberObject.GetNumber())
-            {
-                MergeNumber(numberObject, GetNumberObject(pos));
-            }
-        }
-        private void DestoryNumber(INumberObject numberObject)
-        {
-            numberObjectsList.Remove(numberObject);
-            GameFramework.singleton.getGameRender().DestroyObject(numberObject);
-        }
-        private void MergeNumber(INumberObject numberObjectA, INumberObject numberObjectB)
-        {
-            numberObjectB.SetNumber(numberObjectB.GetNumber() + numberObjectA.GetNumber());
-            DestoryNumber(numberObjectA);
-        }
-
-        int GetNumber(Vector2 pos)
-        {
-            foreach (INumberObject Num in numberObjectsList)
-            {
-                if (Num.GetCurrentPos().Equals(pos))
+                for (int j = 0; j < 4; j++)
                 {
-                    return Num.GetNumber();
+                    Vector2 index = new Vector2(i, j);
+                    INumberObject numberObject = (INumberObject)gameRender.CreateObject(RenderProtocol.CreateNumberObject, 0);
+                    numberObject.SetNumber(2);
+                    numberObject.SetIndex(index);
+                    numberObject.SetPosition(index * IndexToPos);
+                    numberObjList.Add(numberObject);
+
+                    numberTable[i, j] = new NumberData
+                    {
+                        Index = new Vector2(i, j),
+                        TargetIndex = new Vector2(i, j),
+                        Number = 2
+                    };
                 }
             }
-            return 0;
+
+            for (int i = 0; i < 4; i++)
+            {
+                SetNewNumber(2);
+            }
         }
 
-
-        int GetNumber(int x, int y)
+        void SetNewNumber(int num)
         {
-            foreach (INumberObject Num in numberObjectsList)
+            List<NumberData> TempList = new List<NumberData>();
+            foreach (NumberData numberData in numberTable)
             {
-                if (Num.GetCurrentPos().x == x && Num.GetCurrentPos().y == y)
+                if (numberData.Number == 0)
                 {
-                    return Num.GetNumber();
+                    TempList.Add(numberData);
                 }
             }
-            return 0;
+            if (TempList.Count == 0)
+                return;
+            int RandNum = UnityEngine.Random.Range(0, TempList.Count);
+            TempList[RandNum].Number = num;
+
+
+            INumberObject numberObject = GetNumberObject(TempList[RandNum].Index);
+            numberObject.SetNumber(num);
         }
-        INumberObject GetNumberObject(int x, int y)
+
+        INumberObject GetNumberObject(Vector2 index)
         {
-            foreach (INumberObject numberObject in numberObjectsList)
+            foreach (INumberObject numberObject in numberObjList)
             {
-                if (numberObject.GetCurrentPos().Equals(new Vector2(x, y)))
+                if (numberObject.GetIndex() == index)
                 {
                     return numberObject;
                 }
             }
             return null;
         }
-        INumberObject GetNumberObject(Vector2 pos)
-        {
-            foreach (INumberObject numberObject in numberObjectsList)
-            {
-                if (numberObject.GetCurrentPos().Equals(pos))
-                {
-                    return numberObject;
-                }
-            }
-            return null;
-        }
-        void InitGameBoard()
-        {
-            while (numberObjectsList.Count < 2)
-            {
-                Vector2 Pos = new Vector2(Random.Range(0, 4), Random.Range(0, 4));
-                if (GetNumber(Pos) == 0)
-                {
-                    CreateNumber(2, Pos);
-                }
-            }
-        }
-
         void MoveUp()
         {
-            for (int MoveCount = 0; MoveCount < 3; MoveCount++) //移动3次
+            for (int y = 2; y >= 0; y--)
             {
-                for (int j = 0; j < numberObjectsList.Count; j++)
+                for (int x = 3; x >= 0; x--)
                 {
-                    INumberObject numberObject = numberObjectsList[j];
-                    int x = (int)numberObject.GetCurrentPos().x;
-                    int y = (int)numberObject.GetCurrentPos().y;
-                    int y_max = 4;
-
-                    for (int i = y + 1; i < y_max; i++)     //每次每个数字往上移动一格，如果遇到相同的，就合并
+                    if (numberTable[x, y].Number == 0)
+                        continue;
+                    int MoveCount = 0;
+                    for (int i = y + 1; i <= 3; i++)
                     {
-                        if (GetNumberObject(x, i) == null|| GetNumber(x, i) == numberObject.GetNumber())
+                        if (numberTable[x, i].Number != 0 && (numberTable[x, i].Number != numberTable[x, y].Number || numberTable[x, i].bMerged))
                         {
-                            MoveNumber(numberObject, new Vector2(x, i));
+                            break;
                         }
+                        MoveCount++;
+                    }
+                    if (MoveCount > 0)
+                    {
+                        if (numberTable[x, y + MoveCount].Number != 0)
+                        {
+                            numberTable[x, y + MoveCount].bMerged = true;
+                        }
+
+                        numberTable[x, y + MoveCount].Number += numberTable[x, y].Number;
+                        numberTable[x, y].Number = 0;
+                        numberTable[x, y].TargetIndex.y += MoveCount;
                     }
                 }
             }
         }
         void MoveDown()
         {
-            for (int MoveCount = 0; MoveCount < 3; MoveCount++) //移动3次
+            for (int y = 1; y <= 3; y++)
             {
-                for (int j = 0; j < numberObjectsList.Count; j++)
+                for (int x = 3; x >= 0; x--)
                 {
-                    INumberObject numberObject = numberObjectsList[j];
-                    int x = (int)numberObject.GetCurrentPos().x;
-                    int y = (int)numberObject.GetCurrentPos().y;
-                    int y_min = 0;
-
-                    for (int i = y - 1; i >= y_min; i--)     //每次每个数字往下移动一格，如果遇到相同的，就合并
+                    if (numberTable[x, y].Number == 0)
+                        continue;
+                    int MoveCount = 0;
+                    for (int i = y - 1; i >= 0; i--)
                     {
-                        if (GetNumberObject(x, i) == null|| GetNumber(x, i) == numberObject.GetNumber())
+                        if (numberTable[x, i].Number != 0 && (numberTable[x, i].Number != numberTable[x, y].Number || numberTable[x, i].bMerged))
                         {
-                            MoveNumber(numberObject, new Vector2(x, i));
+                            break;
                         }
+                        MoveCount++;
+                    }
+                    if (MoveCount > 0)
+                    {
+                        if (numberTable[x, y - MoveCount].Number != 0)
+                        {
+                            numberTable[x, y - MoveCount].bMerged = true;
+                        }
+                        numberTable[x, y - MoveCount].Number += numberTable[x, y].Number;
+                        numberTable[x, y].Number = 0;
+                        numberTable[x, y].TargetIndex.y -= MoveCount;
                     }
                 }
             }
         }
         void MoveLeft()
         {
-            for (int MoveCount = 0; MoveCount < 3; MoveCount++) //移动3次
+            for (int x = 1; x <= 3; x++)
             {
-                for (int j = 0; j < numberObjectsList.Count; j++)
+                for (int y = 3; y >= 0; y--)
                 {
-                    INumberObject numberObject = numberObjectsList[j];
-                    int x = (int)numberObject.GetCurrentPos().x;
-                    int y = (int)numberObject.GetCurrentPos().y;
-                    int x_min = 0;
-
-                    for (int i = x - 1; i >= x_min; i--)     //每次每个数字往左移动一格，如果遇到相同的，就合并
+                    if (numberTable[x, y].Number == 0)
+                        continue;
+                    int MoveCount = 0;
+                    for (int i = x - 1; i >= 0; i--)
                     {
-                        if (GetNumberObject(i, y) == null|| GetNumber(i, y) == numberObject.GetNumber())
+                        if (numberTable[i, y].Number != 0 && (numberTable[i, y].Number != numberTable[x, y].Number || numberTable[i, y].bMerged))
                         {
-                            MoveNumber(numberObject, new Vector2(i, y));
+                            break;
                         }
+                        MoveCount++;
+                    }
+                    if (MoveCount > 0)
+                    {
+                        if (numberTable[x - MoveCount, y].Number != 0)
+                        {
+                            numberTable[x - MoveCount, y].bMerged = true;
+                        }
+                        numberTable[x - MoveCount, y].Number += numberTable[x, y].Number;
+                        numberTable[x, y].Number = 0;
+                        numberTable[x, y].TargetIndex.x -= MoveCount;
                     }
                 }
             }
         }
         void MoveRight()
         {
-            for (int MoveCount = 0; MoveCount < 3; MoveCount++) //移动3次
+            for (int x = 2; x >= 0; x--)
             {
-                for (int j = 0; j < numberObjectsList.Count; j++)
+                for (int y = 3; y >= 0; y--)
                 {
-                    INumberObject numberObject = numberObjectsList[j];
-                    int x = (int)numberObject.GetCurrentPos().x;
-                    int y = (int)numberObject.GetCurrentPos().y;
-                    int x_max = 4;
-
-                    for (int i = y + 1; i < x_max; i++)     //每次每个数字往右移动一格，如果遇到相同的，就合并
+                    if (numberTable[x, y].Number == 0)
+                        continue;
+                    int MoveCount = 0;
+                    for (int i = x + 1; i <= 3; i++)
                     {
-                        if (GetNumberObject(i, y) == null|| GetNumber(i, y) == numberObject.GetNumber())
+                        if (numberTable[i, y].Number != 0 && (numberTable[i, y].Number != numberTable[x, y].Number || numberTable[i, y].bMerged))
                         {
-                            MoveNumber(numberObject, new Vector2(i, y));
+                            break;
                         }
+                        MoveCount++;
+                    }
+                    if (MoveCount > 0)
+                    {
+                        if(numberTable[x + MoveCount, y].Number!=0)
+                        {
+                            numberTable[x + MoveCount, y].bMerged = true;
+                        }
+                        numberTable[x + MoveCount, y].Number += numberTable[x, y].Number;
+                        numberTable[x, y].Number = 0;
+                        numberTable[x, y].TargetIndex.x += MoveCount;
                     }
                 }
             }
         }
 
-        public RenderProtocol GetGameSize()
+        void MoveAllNum()
         {
-            throw new System.NotImplementedException();
+            //通过targetIndexList来规划运动轨迹
+            CurrentTime += Time.deltaTime;
+            if (CurrentTime < MoveTime)
+            {
+                for (int x = 0; x < 4; x++)
+                {
+                    for (int y = 0; y < 4; y++)
+                    {
+                        if (numberTable[x, y].TargetIndex != numberTable[x, y].Index)
+                        {
+                            Vector2 TargetPos = numberTable[x, y].TargetIndex * IndexToPos;
+                            Vector2 StartPos = numberTable[x, y].Index * IndexToPos;
+
+                            INumberObject numberObject = GetNumberObject(numberTable[x, y].Index);
+                            numberObject.SetPosition(Vector2.MoveTowards(numberObject.GetCurrentPos(), TargetPos, Vector2.Distance(TargetPos, StartPos) / (MoveTime / Time.deltaTime)));
+                        }
+                    }
+                }
+            }
+            else
+            {
+                //foreach (INumberObject numberObject in numberObjList)
+                //{
+                //    Vector2 index = numberObject.GetIndex();
+                //    Vector2 targetindex = numberTable[(int)index.x, (int)index.y].TargetIndex;
+                //    if (index != targetindex)
+                //    {
+                //        numberTable[(int)targetindex.x, (int)targetindex.y].Number += numberObject.GetNumber();
+                //        numberTable[(int)index.x, (int)index.y].Number = 0;
+                //    }
+                //}
+
+                for (int x = 0; x < 4; x++)
+                {
+                    for (int y = 0; y < 4; y++)
+                    {
+                        numberTable[x, y].Index = new Vector2(x, y);
+                        numberTable[x, y].TargetIndex = new Vector2(x, y);
+                        numberTable[x, y].bMerged = false;
+                    }
+                }
+                foreach (INumberObject numberObject in numberObjList)
+                {
+                    Vector2 index = numberObject.GetIndex();
+                    numberObject.SetPosition(index * IndexToPos);
+                    numberObject.SetNumber(numberTable[(int)index.x, (int)index.y].Number);
+                }
+                bGetInput = true;
+                CurrentTime = 0;
+                for (int i = 0; i < 2; i++)
+                {
+                    SetNewNumber(2);
+                }
+                DebugLog();
+            }
+
+
         }
 
-        public INumberObject[,] GetNumbers()
+        void DebugLog()
         {
-            throw new System.NotImplementedException();
+            string LogString = string.Empty;
+            for (int y = 3; y >= 0; y--)
+            {
+                for (int x = 0; x < 4; x++)
+                {
+                    //Debug.Log(x.ToString() + " " + y.ToString());
+                    LogString = string.Concat(LogString, numberTable[x, y].Number.ToString() + " ");
+                }
+                LogString = string.Concat(LogString, "\n");
+            }
+            Debug.Log(LogString);
         }
     }
 
+    public class NumberData
+    {
+        public int Number;
+        public Vector2 Index = new Vector2();
+        public Vector2 TargetIndex = new Vector2();
+        public bool bMerged = false;
+
+        public NumberData()
+        {
+
+        }
+    }
 }

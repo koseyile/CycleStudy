@@ -49,26 +49,26 @@ namespace mm
             }
 
             //触屏输入
-            else if (Input.GetTouch(0).phase == TouchPhase.Began)
-            {
-                startPoint = Input.GetTouch(0).position;
-            }
-            else if (Input.GetTouch(0).phase == TouchPhase.Moved)
-            {
-                endPoint = Input.GetTouch(0).position;
-                if (Vector2.Distance(startPoint, endPoint) > OffsetDistance)
-                {
-                    GetMoveDirection();
-                }
-            }
-            else if (Input.GetTouch(0).phase == TouchPhase.Ended)
-            {
-                endPoint = Input.GetTouch(0).position;
-                if (Vector2.Distance(startPoint,endPoint) < OffsetDistance)
-                {
-                    InputData = InputProtocol.Click;
-                }
-            }
+            //else if (Input.GetTouch(0).phase == TouchPhase.Began)
+            //{
+            //    startPoint = Input.GetTouch(0).position;
+            //}
+            //else if (Input.GetTouch(0).phase == TouchPhase.Moved)
+            //{
+            //    endPoint = Input.GetTouch(0).position;
+            //    if (Vector2.Distance(startPoint, endPoint) > OffsetDistance)
+            //    {
+            //        GetMoveDirection();
+            //    }
+            //}
+            //else if (Input.GetTouch(0).phase == TouchPhase.Ended)
+            //{
+            //    endPoint = Input.GetTouch(0).position;
+            //    if (Vector2.Distance(startPoint,endPoint) < OffsetDistance)
+            //    {
+            //        InputData = InputProtocol.Click;
+            //    }
+            //}
 
             //鼠标输入
             else if (Input.GetMouseButtonDown(0))
