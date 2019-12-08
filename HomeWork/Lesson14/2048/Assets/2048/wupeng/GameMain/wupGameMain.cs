@@ -11,7 +11,7 @@ public class wupGameMain : MonoBehaviour
     void Start()
     {
 
-        GameFramework.singleton.Init(new wupGameInput(), new WPGameCore(), new wupGameRender2());
+        GameFramework.singleton.Init(new wupGameInput(), new WPGameCore(), new WPGameRender());
     }
 
     // Update is called once per frame
