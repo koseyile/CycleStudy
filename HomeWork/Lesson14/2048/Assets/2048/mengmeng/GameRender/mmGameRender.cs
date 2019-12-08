@@ -112,5 +112,14 @@ namespace mm
             NumberObject.GetComponentInChildren<TextMesh>().color = color;
         }
 
+        public void SetLastIndex(Vector2 index)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Vector2 GetLastIndex()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

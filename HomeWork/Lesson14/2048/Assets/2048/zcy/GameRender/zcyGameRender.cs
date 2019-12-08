@@ -57,6 +57,16 @@ namespace ZCY
         }
         public void SetIndex(Vector2 index) { }
         public Vector2 GetIndex() { return new Vector2(); }
+
+        public void SetLastIndex(Vector2 index)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Vector2 GetLastIndex()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
     public class zcyGameRender : IGameRender

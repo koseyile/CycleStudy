@@ -37,7 +37,8 @@ namespace WP
 
         public void DestroyObject(IRenderBase iRenderBase)
         {
-            Destroy(iRenderBase as Object);
+            Number go = (Number)iRenderBase;
+            Destroy(go.objNumber);
         }
 
         public void ModuleDestroy()
@@ -60,7 +61,9 @@ namespace WP
     {
         public GameObject objNumber;
         int number;
+        Vector2 position;
         Vector2 index;
+        Vector2 lastIndex;
         int gameSize;
         int width_Screen;
         int height_Screen;
@@ -94,12 +97,12 @@ namespace WP
 
         public Vector2 GetCurrentPos()
         {
-            return this.index;
+            return this.position;
         }
 
         public Vector2 GetIndex()
         {
-            throw new System.NotImplementedException();
+            return this.index;
         }
 
         public int GetNumber()
@@ -118,7 +121,7 @@ namespace WP
 
         public void SetIndex(Vector2 index)
         {
-            throw new System.NotImplementedException();
+            this.index = index;
         }
 
         public void SetNumber(int number)
@@ -140,15 +143,15 @@ namespace WP
         }
 
         
-        public void SetPosition(Vector2 index)
+        public void SetPosition(Vector2 _pos)
         {
             if (objNumber)
             {
-                this.index = index;//索引
+                this.position = _pos;//索引
 
                 int interval = Mathf.Min(width_Screen, height_Screen) / gameSize;
 
-                Vector3 pos = new Vector3(interval / 2 + (int)index.x * interval, interval / 2 +(int)index.y * interval, 0);
+                Vector3 pos = new Vector3(interval / 2 + _pos.y * interval, interval / 2 + _pos.x * interval, 0);
 
                 pos += width_Screen > height_Screen ? new Vector3((width_Screen - height_Screen) / 2, 0, 0)
                     : new Vector3(0, (height_Screen - width_Screen) / 2 , 0);
@@ -156,6 +159,16 @@ namespace WP
                 this.objNumber.transform.position = pos;
 
             }
+        }
+
+        public void SetLastIndex(Vector2 index)
+        {
+            this.lastIndex = index;
+        }
+
+        public Vector2 GetLastIndex()
+        {
+            return this.lastIndex;
         }
         
     }

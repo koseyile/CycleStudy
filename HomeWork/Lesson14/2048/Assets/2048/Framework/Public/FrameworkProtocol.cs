@@ -36,14 +36,17 @@ namespace Game2048Framework
     {
         void SetPosition(Vector2 index);         //wup: 设置位置
         Vector2 GetCurrentPos();                 //wup: 获取Number位置
+        void SetLastIndex(Vector2 index);        //wup: 设置上一个索引
+        Vector2 GetLastIndex();                  //wup: 获取上一个索引
+
         void SetNumber(int number);              //wup: 设置Number数字
         int GetNumber();                         //wup: 获取Number数字
         void SetColor(Color color);              //wup: 设置Number颜色 
 
         //void SetTargetIndex(Vector2 index);      //mengm：设置Number接下来要移动到的目标位置索引 （这个接口有需要的同学实现就好）
         //Vector2 GetTargetIndex();                //mengm:获取Number接下来要移动到的目标位置索引
-        void SetIndex(Vector2 index);         //mengm: 设置位置索引
-        Vector2 GetIndex();                     //mengm:获取位置索引
+        void SetIndex(Vector2 index);              //mengm: 设置位置索引
+        Vector2 GetIndex();                        //mengm:获取位置索引
     }
     //==========================================================Render protocol end
 }
