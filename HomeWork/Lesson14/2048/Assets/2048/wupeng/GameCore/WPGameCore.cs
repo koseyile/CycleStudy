@@ -211,7 +211,7 @@ namespace WP
 
                             //NumberMove(numbers[0, 1], new Vector2(0, 2), 0.5f);
                             //NumberMerge(numbers[0, 0], new Vector2(0, 1), 0.5f);
-                            NumberMoveToEnd(numbers[0, 1], "right", 0.5f);
+                            NumberMoveToEnd(numbers[0, 0], "right", 0.5f);
 
                             //动画结束
                             //GenerateNumbers();
@@ -376,12 +376,12 @@ namespace WP
                     numbers_data[(int)dest.x, (int)dest.y].SetNumber(sum);
 
                     //更新渲染层：
-                    INumberObject newNum = GameFramework.singleton.getGameRender().CreateObject(RenderProtocol.CreateNumberObject, size) as INumberObject;
-                    newNum.SetNumber(0);
-                    newNum.SetPosition(index);
-                    numbers[(int)index.x, (int)index.y] = newNum;
-                    GameFramework.singleton.getGameRender().DestroyObject(numbers[(int)dest.x, (int)dest.y]);
-                    numbers[(int)dest.x, (int)dest.y] = number;
+                    //INumberObject newNum = GameFramework.singleton.getGameRender().CreateObject(RenderProtocol.CreateNumberObject, size) as INumberObject;
+                    //newNum.SetNumber(0);
+                    //newNum.SetPosition(index);
+                    //numbers[(int)index.x, (int)index.y] = newNum;
+                    //GameFramework.singleton.getGameRender().DestroyObject(numbers[(int)dest.x, (int)dest.y]);
+                    //numbers[(int)dest.x, (int)dest.y] = number;
 
                     return true;
                 }
@@ -396,9 +396,8 @@ namespace WP
         public void NumberMoveToEnd(INumberObject current, string orien, float speed)
         {
             Vector2 index = current.GetIndex();
-            Vector2 index_last = current.GetLastIndex();
 
-            //int mergeCount = 1;
+            int mergeCount = 1;
             switch (orien)
             {
                 case "right":
@@ -407,29 +406,27 @@ namespace WP
 
                     if (dest.y < size)
                     {
-                        if (NumberMove(current, dest, speed))
-                        {            
-                            index.y += 1;
-
-                            Debug.Log(current.GetIndex());
+                        if (mergeCount == 1)
+                        {
+                            if (NumberMerge(current, dest, speed))
+                            {
+                                mergeCount--;
+                                index.y += 1;
+                            }
                         }
                     }
-                    else
-                    {
 
+                    if (dest.y < size)
+                    {
+                        if (NumberMove(current, dest, speed))
+                        {
+                            index.y += 1;
+                        }
                     }
 
-                    //if (mergeCount == 1)
-                    //{
-                    //    if (NumberMerge(current, dest, speed))
-                    //    {
-                    //        mergeCount--;
-                    //        index.y += 1;
-                    //    }                       
-                    //}
 
 
-                    
+
                     break;
                 case "left":
                     break;
