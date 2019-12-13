@@ -201,7 +201,7 @@ namespace ZCY
             int t = l[r];
             int i = t / Rows;
             int j = t % Cols;
-            Debug.Log("t=" + t + " i=" + i + " j=" + j);
+            //Debug.Log("t=" + t + " i=" + i + " j=" + j);
             numberObjectArray[i, j] = GameFramework.singleton.getGameRender().CreateObject(RenderProtocol.CreateNumberObject, 4) as INumberObject;
 
             int rNum = Random.Range(1, 3);
