@@ -10,9 +10,13 @@ namespace ZCY
     {
         private static GameObject numberGameObjPrefab;
         private GameObject numberGameObject;
+        private Vector2 index;
+        private static int s_id;
+        private int id;
 
         public zcyNumberObject()
         {
+            id = s_id++;
             if (numberGameObjPrefab == null)
             {
                 numberGameObjPrefab = Resources.Load<GameObject>("CubeNumber");
@@ -20,9 +24,28 @@ namespace ZCY
             numberGameObject = GameObject.Instantiate(numberGameObjPrefab);
         }
 
+        public void SetIndex(Vector2 _index)
+        {
+            index = _index;
+        }
+        public Vector2 GetIndex()
+        {
+            return index;
+        }
+
+        public void SetPosition(Vector2 index)
+        {
+            numberGameObject.transform.position = new Vector3(index.x, index.y, 0.4f);
+        }
+
         public Vector2 GetCurrentPos()
         {
-            throw new System.NotImplementedException();
+            return new Vector2(numberGameObject.transform.position.x, numberGameObject.transform.position.y);
+        }
+
+        public void SetNumber(int number)
+        {
+            numberGameObject.GetComponentInChildren<TextMeshPro>().SetText(number.ToString());
         }
 
         public int GetNumber()
@@ -34,22 +57,7 @@ namespace ZCY
         {
 
         }
-
-        public void SetNumber(int number)
-        {
-            numberGameObject.GetComponentInChildren<TextMeshPro>().SetText(number.ToString());
-        }
-
-        public void SetPosition(Vector3 pos)
-        {
-            numberGameObject.transform.position = pos;
-        }
-
-        public void SetPosition(Vector2 index)
-        {
-
-        }
-
+        
         public void SetText(string text)
         {
             //set text
@@ -59,8 +67,6 @@ namespace ZCY
         {
             throw new System.NotImplementedException();
         }
-        public void SetIndex(Vector2 index) { }
-        public Vector2 GetIndex() { return new Vector2(); }
 
         public void SetLastIndex(Vector2 index)
         {

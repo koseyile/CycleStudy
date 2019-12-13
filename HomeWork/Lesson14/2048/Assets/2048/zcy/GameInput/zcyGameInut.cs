@@ -24,6 +24,21 @@ namespace ZCY
             {
                 currentInputData = InputProtocol.MoveRight;
             }
+
+            if (Input.GetKeyUp(KeyCode.LeftArrow))
+            {
+                currentInputData = InputProtocol.MoveLeft;
+            }
+
+            if (Input.GetKeyUp(KeyCode.UpArrow))
+            {
+                currentInputData = InputProtocol.MoveUp;
+            }
+
+            if (Input.GetKeyUp(KeyCode.DownArrow))
+            {
+                currentInputData = InputProtocol.MoveDown;
+            }
         }
 
         public InputProtocol GetInputData()
