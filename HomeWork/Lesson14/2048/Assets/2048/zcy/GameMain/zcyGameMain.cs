@@ -10,7 +10,6 @@ namespace ZCY
         void Start()
         {
             GameFramework.singleton.Init(new zcyGameInput(), new zcyGameCore(), new zcyGameRender());
-            
         }
 
         // Update is called once per frame
