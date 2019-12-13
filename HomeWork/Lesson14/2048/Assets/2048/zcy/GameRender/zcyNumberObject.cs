@@ -9,10 +9,11 @@ namespace ZCY
     public class zcyNumberObject : INumberObject
     {
         private static GameObject numberGameObjPrefab;
-        private GameObject numberGameObject;
+        public GameObject numberGameObject;
         private Vector2 index;
         private static int s_id;
         private int id;
+        private int number;
 
         public zcyNumberObject()
         {
@@ -43,14 +44,15 @@ namespace ZCY
             return new Vector2(numberGameObject.transform.position.x, numberGameObject.transform.position.y);
         }
 
-        public void SetNumber(int number)
+        public void SetNumber(int _number)
         {
+            number = _number;
             numberGameObject.GetComponentInChildren<TextMeshPro>().SetText(number.ToString());
         }
 
         public int GetNumber()
         {
-            throw new System.NotImplementedException();
+            return number;
         }
 
         public void SetColor(Color color)

@@ -17,12 +17,15 @@ namespace ZCY
         private Vector2 moveDir;
         private Vector2 endPos;
         private bool moveFinished;
+        private bool hasMerged;
+        private float distanceWithParent;
 
-        public NumberMoveObject(INumberObject _moveNumberObj, InputProtocol _moveType, Vector2 _endPos)
+        public NumberMoveObject(INumberObject _moveNumberObj, InputProtocol _moveType, Vector2 _endPos, float _distanceWithParent)
         {
             moveNumberObj = _moveNumberObj;
             moveType = _moveType;
             endPos = _endPos;
+            distanceWithParent = _distanceWithParent;
 
             switch (moveType)
             {
@@ -47,10 +50,38 @@ namespace ZCY
             Vector2 pos = moveNumberObj.GetCurrentPos();
             pos += moveDir * speed;
 
-            if (Vector2.Dot(endPos - pos, moveDir) <= 0)
+            if (parent==null && Vector2.Dot(endPos - pos, moveDir) <= 0)
             {
                 pos = endPos;
                 moveFinished = true;
+            }else if(parent!=null && parent.moveFinished==true){
+                Vector2 tempEndPos = parent.moveNumberObj.GetCurrentPos()-distanceWithParent*moveDir;
+                
+                bool needMerge = parent.moveNumberObj.GetNumber()==moveNumberObj.GetNumber() && this.hasMerged==false && parent.hasMerged==false;
+                if(needMerge)
+                {
+                    tempEndPos = parent.moveNumberObj.GetCurrentPos();
+                }
+
+                if(Vector2.Dot(tempEndPos - pos, moveDir) <= 0)
+                {
+                    pos = tempEndPos;
+                    moveFinished = true;
+
+                    if(needMerge)
+                    {
+                        GameFramework.singleton.getGameRender().DestroyObject(this.moveNumberObj);
+                        parent.next = this.next;
+                        if(this.next!=null)
+                        {
+                            this.next.parent = parent;
+                        }
+                        parent.hasMerged = true;
+                        parent.moveNumberObj.SetNumber(parent.moveNumberObj.GetNumber()*2);
+                    }
+                }
+
+
             }
 
             moveNumberObj.SetPosition(pos);
@@ -71,9 +102,17 @@ namespace ZCY
             return b;
         }
 
+        private void ReSet()
+        {
+            hasMerged=false;
+            moveFinished=false;
+            speed = 0f;
+        }
+
         public void Rebuild(INumberObject[,] numberObjectArray, Vector2 originalPos, Vector2 size, float NumberObjDistance, int Rows, int Cols)
         {
             Vector2 pos = moveNumberObj.GetCurrentPos();
+            ReSet();
 
             for (int i = 0; i < Rows; i++)
             {
@@ -114,6 +153,7 @@ namespace ZCY
 
         enum GameState{
             GameStart,
+            GenerateRandomNumber,
             WaitingPlayerInput,
             MovingBegin,
             Moving,
@@ -128,20 +168,6 @@ namespace ZCY
         {
             x_left_bottom = CenterPos.x - (Cols / 2 - 1) * NumberW - (Cols / 2 - 1) * NumberObjDistance - (NumberObjDistance + NumberW) / 2;
             y_left_bottom = CenterPos.y - (Rows / 2 - 1) * NumberH - (Rows / 2 - 1) * NumberObjDistance - (NumberObjDistance + NumberH) / 2;
-
-            //for (int i = 0; i < Rows; i++)
-            //{
-            //    for (int j = 0; j < Cols; j++)
-            //    {
-            //        INumberObject iNumberObj = GameFramework.singleton.getGameRender().CreateObject(RenderProtocol.CreateNumberObject, 4) as INumberObject;
-            //        iNumberObj.SetNumber(2);
-            //        float x = x_left_bottom + i * (NumberW + NumberObjDistance);
-            //        float y = y_left_bottom + j * (NumberH + NumberObjDistance);
-            //        iNumberObj.SetPosition(new Vector2(x, y));
-            //    }
-            //}
-
-
         }
 
         private List<int> getEmptyNumberIndexList()
@@ -177,7 +203,9 @@ namespace ZCY
             int j = t % Cols;
             Debug.Log("t=" + t + " i=" + i + " j=" + j);
             numberObjectArray[i, j] = GameFramework.singleton.getGameRender().CreateObject(RenderProtocol.CreateNumberObject, 4) as INumberObject;
-            numberObjectArray[i, j].SetNumber(2);
+
+            int rNum = Random.Range(1, 3);
+            numberObjectArray[i, j].SetNumber(rNum*2);
 
             float x = x_left_bottom + j * (NumberW + NumberObjDistance);
             float y = y_left_bottom + i * (NumberH + NumberObjDistance);
@@ -198,6 +226,12 @@ namespace ZCY
                 case GameState.GameStart:
                     {
                         GenerateRandomNumber();
+                        GenerateRandomNumber();   
+                        currentGameState = GameState.WaitingPlayerInput;
+                    }
+                    break;
+                case GameState.GenerateRandomNumber:
+                    {
                         GenerateRandomNumber();   
                         currentGameState = GameState.WaitingPlayerInput;
                     }
@@ -313,7 +347,7 @@ namespace ZCY
                     break;
             }
 
-            NumberMoveObject moveObj = new NumberMoveObject(numberObjectArray[i, j], moveType, endPos);
+            NumberMoveObject moveObj = new NumberMoveObject(numberObjectArray[i, j], moveType, endPos, NumberW+NumberObjDistance);
             switch (moveType)
             {
                 case InputProtocol.MoveUp:
@@ -400,7 +434,7 @@ namespace ZCY
                 }
             }
 
-            currentGameState = GameState.WaitingPlayerInput;
+            currentGameState = GameState.GenerateRandomNumber;
         }
 
         private void Clean()

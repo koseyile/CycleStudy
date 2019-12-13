@@ -39,7 +39,8 @@ namespace ZCY
 
         public void DestroyObject(IRenderBase iRenderBase)
         {
-
+            zcyNumberObject zcyObj = iRenderBase as zcyNumberObject;
+            GameObject.Destroy(zcyObj.numberGameObject);
         }
     }
 }
