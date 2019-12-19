@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Game2048Framework;
 
-
 namespace WP
 {
     public class WPGameCore : IGameCore
@@ -86,10 +85,9 @@ namespace WP
         private int size = 4;
         private float waitTime;
 
-
         public void ModuleInit()
         {
-            waitTime = 1.2f;
+            waitTime = 2.0f;
             numbers = new INumberObject[4, 4];//声明渲染层
             numbers_data = new Number[4, 4];  //声明数据层
             blank = new List<Vector2>();      //声明空格
@@ -117,17 +115,6 @@ namespace WP
             }
 
             RenewBlank();//更新空格列表
-            //numbers_data[0, 0].SetLastNum(2);
-            //numbers_data[0, 0].SetCurrentNum(2);
-            //numbers[0, 0].SetNumber(2);
-            //
-            //numbers_data[0, 1].SetLastNum(2);
-            //numbers_data[0, 1].SetCurrentNum(2);
-            //numbers[0, 1].SetNumber(2);
-            //
-            //numbers_data[0, 2].SetLastNum(4);
-            //numbers_data[0, 2].SetCurrentNum(4);
-            //numbers[0, 2].SetNumber(4);
 
             GenerateNumbers(); //在数据层和渲染层生成随机2或4
         }
@@ -230,7 +217,20 @@ namespace WP
                     }
                     break;
                 case State.PlayerWait:
-                    NumberAnimate(1.5f);
+
+                    if (waitTime > 0)
+                    {
+                        NumberAnimate(2.5f);
+                        waitTime -= Time.deltaTime;
+                    }
+                    else
+                    {
+                        GenerateNumbers();
+                        waitTime = 1.2f;
+                        playerstate = State.PlayerInput;
+                        
+                    }
+                    
                     break;
                 default:
                     break;
@@ -474,10 +474,10 @@ namespace WP
                         Vector2 lastIndex = numbers_data[i, j].GetMergeIndex();
                         Vector2 destIndex = numbers_data[i, j].GetCurrentIndex();
 
-                        Vector2 direct = -(destIndex - lastIndex).normalized;
+                        Vector2 direct = (destIndex - lastIndex).normalized;
                         Vector2 currentPos = numbers[(int)lastIndex.x, (int)lastIndex.y].GetCurrentPos();
 
-                        currentPos += direct * speed * Time.deltaTime * (destIndex.x + destIndex.y - lastIndex.x - lastIndex.y);
+                        currentPos += direct * speed * Time.deltaTime * Mathf.Abs(destIndex.x + destIndex.y - lastIndex.x - lastIndex.y);
                         numbers[(int)lastIndex.x, (int)lastIndex.y].SetPosition(currentPos);
 
                         if (Mathf.Abs((destIndex - currentPos).magnitude) < 0.06)
@@ -504,10 +504,10 @@ namespace WP
                         Vector2 destIndex = numbers_data[i, j].GetCurrentIndex();
                         Vector2 lastIndex = numbers_data[i, j].GetLastIndex();
 
-                        Vector2 direct = -(destIndex - lastIndex).normalized;
+                        Vector2 direct = (destIndex - lastIndex).normalized;
                         Vector2 currentPos = numbers[(int)lastIndex.x, (int)lastIndex.y].GetCurrentPos();
 
-                        currentPos += direct * speed * Time.deltaTime * (destIndex.x + destIndex.y - lastIndex.x - lastIndex.y);
+                        currentPos += direct * speed * Time.deltaTime * Mathf.Abs(destIndex.x + destIndex.y - lastIndex.x - lastIndex.y);
                         numbers[(int)lastIndex.x, (int)lastIndex.y].SetPosition(currentPos);
 
                         if (Mathf.Abs((destIndex - currentPos).magnitude) < 0.06)

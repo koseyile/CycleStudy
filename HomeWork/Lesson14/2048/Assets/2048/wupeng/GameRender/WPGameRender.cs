@@ -132,7 +132,10 @@ namespace WP
 
                 if (this.objNumber.GetComponentInChildren<Text>())
                 {
-                    this.objNumber.GetComponentInChildren<Text>().text = number.ToString();
+                    if (number == 0)
+                        return;
+                    else
+                        this.objNumber.GetComponentInChildren<Text>().text = number.ToString();
                 }
                 else
                 {
