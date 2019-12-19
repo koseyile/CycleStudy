@@ -202,25 +202,31 @@ namespace WP
                         case InputProtocol.None:
                             break;
                         case InputProtocol.MoveRight:
-                            //ShowLastData();
+                            ShowLastData();
                             MoveRight();
-                            //ShowCurrentData();
-                            //ShowCurrentDataInfo();
+                            ShowCurrentData();
+                            ShowCurrentDataInfo();
                             playerstate = State.PlayerWait;
-
                             break;
-                        //case InputProtocol.MoveLeft:
-                        //    if（MoveLeft()）//计算结果
-                        //        playerstate = State.PlayerWait;
-                        //    break;
-                        //case InputProtocol.MoveUp:
-                        //    if（MoveUp()）//计算结果
-                        //        playerstate = State.PlayerWait;
-                        //    break;
-                        //case InputProtocol.MoveDown:
-                        //    if（MoveDown()）//计算结果
-                        //        playerstate = State.PlayerWait;
-                        //    break;
+                        case InputProtocol.MoveLeft:
+                            ShowCurrentData();
+                            MoveLeft(); //计算结果
+                            ShowCurrentData();
+                            ShowCurrentDataInfo();
+                            playerstate = State.PlayerWait;
+                            break;
+                        case InputProtocol.MoveUp:
+                            MoveUp();//计算结果
+                            playerstate = State.PlayerWait;
+                            break;
+                        case InputProtocol.MoveDown:
+                            ShowCurrentData();
+                            MoveDown();//计算结果
+                            
+                            ShowCurrentData();
+                            ShowCurrentDataInfo();
+                            playerstate = State.PlayerWait;
+                            break;
                     }
                     break;
                 case State.PlayerWait:
@@ -233,7 +239,6 @@ namespace WP
 
         public void MoveRight()
         {
-            int count = 0;
             for (int i = 0; i < size; i++)
             {
                 for (int j = size - 2; j >= 0; j--)
@@ -246,13 +251,36 @@ namespace WP
 
         public void MoveLeft()
         {
-            int count = 0;
             for (int i = 0; i < size; i++)
             {
-                for (int j = size - 2; j >= 0; j--)
+                for (int j = 1; j < size; j++)
                 {
                     Number current = numbers_data[i, j];
-                    DataMoveToEnd(current, "right");
+                    DataMoveToEnd(current, "left");
+                }
+            }
+        }
+
+        public void MoveUp()
+        {
+            for (int j = 0; j < size; j++)
+            {
+                for (int i = size -2 ; i >= 0; i--)
+                {
+                    Number current = numbers_data[i, j];
+                    DataMoveToEnd(current, "up");
+                }
+            }
+        }
+
+        public void MoveDown()
+        {
+            for (int j = 0; j < size; j++)
+            {
+                for (int i = 1; i < size; i++)
+                {
+                    Number current = numbers_data[i, j];
+                    DataMoveToEnd(current, "down");
                 }
             }
         }
@@ -362,17 +390,70 @@ namespace WP
                         }
                     }
 
-                    //Debug.Log(count);
-
                     break;
 
 
-                //case "left":
-                //    break;
-                //case "up":
-                //    break;
-                //case "down":
-                //    break;
+                case "left":
+                    for (int i = y - 1; i >= 0; i--)
+                    {
+                        Debug.Log("    " + "x:" + x + " y:" + y + "          " + i);
+
+                        if (DataMerge(number, numbers_data[x, i]))
+                        {
+                            Debug.Log("merge" + "to" + i);
+                            count++;
+                        }
+                        else
+                        {
+                            if (DataMove(number, new Vector2(x, i)))
+                            {
+                                Debug.Log("move" + "to" + i);
+                                count++;
+                            }
+                        }
+                    }
+                    break;
+                case "up":
+                    for (int i = x + 1; i < size; i++)
+                    {
+                        Debug.Log("    " + "x:" + x + " y:" + y + "          " + i);
+
+                        if (DataMerge(number, numbers_data[i, y]))
+                        {
+                            Debug.Log("merge" + "to" + i);
+                            count++;
+                        }
+                        else
+                        {
+                            if (DataMove(number, new Vector2(i, y)))
+                            {
+                                Debug.Log("move" + "to" + i);
+                                count++;
+                            }
+                        }
+                    }
+                    break;
+                case "down":
+                    for (int i = x - 1; i >= 0; i--)
+                    {
+                        Debug.Log("    " + "x:" + x + " y:" + y + "          " + i);
+
+                        if (DataMerge(number, numbers_data[i, y]))
+                        {
+                            Debug.Log("merge" + "to" + i);
+                            count++;
+                        }
+                        else
+                        {
+                            if (DataMove(number, new Vector2(i, y)))
+                            {
+                                Debug.Log("move" + "to" + i);
+                                count++;
+                            }
+                        }
+                    }
+
+                    break;
                 default:
                     break;
             }
@@ -393,13 +474,13 @@ namespace WP
                         Vector2 lastIndex = numbers_data[i, j].GetMergeIndex();
                         Vector2 destIndex = numbers_data[i, j].GetCurrentIndex();
 
-                        Vector2 direct = (destIndex - lastIndex).normalized;
+                        Vector2 direct = -(destIndex - lastIndex).normalized;
                         Vector2 currentPos = numbers[(int)lastIndex.x, (int)lastIndex.y].GetCurrentPos();
 
                         currentPos += direct * speed * Time.deltaTime * (destIndex.x + destIndex.y - lastIndex.x - lastIndex.y);
                         numbers[(int)lastIndex.x, (int)lastIndex.y].SetPosition(currentPos);
 
-                        if (Mathf.Abs((destIndex - currentPos).magnitude) < 0.03)
+                        if (Mathf.Abs((destIndex - currentPos).magnitude) < 0.06)
                         {
                             int res = numbers_data[i, j].GetCurrentNum();
 
@@ -423,13 +504,13 @@ namespace WP
                         Vector2 destIndex = numbers_data[i, j].GetCurrentIndex();
                         Vector2 lastIndex = numbers_data[i, j].GetLastIndex();
 
-                        Vector2 direct = (destIndex - lastIndex).normalized;
+                        Vector2 direct = -(destIndex - lastIndex).normalized;
                         Vector2 currentPos = numbers[(int)lastIndex.x, (int)lastIndex.y].GetCurrentPos();
 
                         currentPos += direct * speed * Time.deltaTime * (destIndex.x + destIndex.y - lastIndex.x - lastIndex.y);
                         numbers[(int)lastIndex.x, (int)lastIndex.y].SetPosition(currentPos);
 
-                        if (Mathf.Abs((destIndex - currentPos).magnitude) < 0.03)
+                        if (Mathf.Abs((destIndex - currentPos).magnitude) < 0.06)
                         {
                             int res = numbers_data[i, j].GetCurrentNum();
 
@@ -484,7 +565,6 @@ namespace WP
                + numbers_data[2, 2].GetCurrentNum()  + " " + numbers_data[2, 3].GetCurrentNum());
             Debug.Log(numbers_data[1, 0].GetCurrentNum()  + " " + numbers_data[1, 1].GetCurrentNum()  + " "
                 + numbers_data[1, 2].GetCurrentNum()  + " " + numbers_data[1, 3].GetCurrentNum());
-            Debug.Log(111111111111);
             Debug.Log(numbers_data[0, 0].GetCurrentNum()  + " " + numbers_data[0, 1].GetCurrentNum() + " "
                 + numbers_data[0, 2].GetCurrentNum() + " " + numbers_data[0, 3].GetCurrentNum() );
             Debug.Log(" ");
