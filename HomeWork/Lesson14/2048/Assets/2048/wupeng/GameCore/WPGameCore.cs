@@ -136,7 +136,7 @@ namespace WP
             {
                 for (int j = 0; j < size; j++)
                 {
-                    if (numbers_data[i, j].GetLastNum() == 0)
+                    if (numbers_data[i, j].GetCurrentNum() == 0)
                     {
                         blank.Add(new Vector2(i, j));
                     }
@@ -193,39 +193,20 @@ namespace WP
                         case InputProtocol.None:
                             break;
                         case InputProtocol.MoveRight:
-                            Debug.Log("right");
-                            ShowCurrentData();
-                            ShowCurrentDataInfo();
-                            MoveRight();
-                            ShowCurrentData();
-                            ShowCurrentDataInfo();
-                            playerstate = State.PlayerWait;
+                            if(MoveRight() > 0)
+                                playerstate = State.PlayerWait;
                             break;
                         case InputProtocol.MoveLeft:
-                            Debug.Log("left");
-                            ShowCurrentData();
-                            ShowCurrentDataInfo();
-                            MoveLeft(); //计算结果
-                            ShowCurrentData();
-                            ShowCurrentDataInfo();
-                            playerstate = State.PlayerWait;
+                            if(MoveLeft() > 0) //计算结果
+                                playerstate = State.PlayerWait;
                             break;
-                        case InputProtocol.MoveUp:
-                            Debug.Log("up");
-                            ShowCurrentData();
-                            ShowCurrentDataInfo();
-                            MoveUp();//计算结果
-                            ShowCurrentData();
-                            ShowCurrentDataInfo();
-                            playerstate = State.PlayerWait;
+                        case InputProtocol.MoveUp:;
+                            if(MoveUp()>0)//计算结果
+                                playerstate = State.PlayerWait;
                             break;
                         case InputProtocol.MoveDown:
-                            ShowCurrentData();
-                            ShowCurrentDataInfo();
-                            MoveDown();//计算结果
-                            ShowCurrentData();
-                            ShowCurrentDataInfo();
-                            playerstate = State.PlayerWait;
+                            if(MoveDown() > 0)//计算结果
+                                playerstate = State.PlayerWait;
                             break;
                     }
                     break;
@@ -239,7 +220,7 @@ namespace WP
                     else
                     {
                         GenerateNumbers();
-                        waitTime = 1.2f;
+                        waitTime = 0.8f;
                         playerstate = State.PlayerInput;
 
                         ShowCurrentData();
@@ -252,52 +233,62 @@ namespace WP
             }
         }
 
-        public void MoveRight()
+        public int MoveRight()
         {
+            int count = 0;
             for (int i = 0; i < size; i++)
             {
                 for (int j = size - 2; j >= 0; j--)
                 {
                     Number current = numbers_data[i, j];
-                    DataMoveToEnd(current, "right");
+                    count += DataMoveToEnd(current, "right");
                 }
             }
+
+            return count;
         }
 
-        public void MoveLeft()
+        public int MoveLeft()
         {
+            int count = 0;
             for (int i = 0; i < size; i++)
             {
                 for (int j = 1; j < size; j++)
                 {
                     Number current = numbers_data[i, j];
-                    DataMoveToEnd(current, "left");
+                    count += DataMoveToEnd(current, "left");
                 }
             }
+            return count;
         }
 
-        public void MoveUp()
+        public int MoveUp()
         {
+            int count = 0;
             for (int j = 0; j < size; j++)
             {
                 for (int i = size -2 ; i >= 0; i--)
                 {
                     Number current = numbers_data[i, j];
-                    DataMoveToEnd(current, "up");
+                    count += DataMoveToEnd(current, "up");
                 }
             }
+
+            return count;
         }
 
-        public void MoveDown()
+        public int MoveDown()
         {
+            int count = 0;
             for (int j = 0; j < size; j++)
             {
                 for (int i = 1; i < size; i++)
                 {
                     Number current = numbers_data[i, j];
-                    DataMoveToEnd(current, "down");
+                    count += DataMoveToEnd(current, "down");
                 }
             }
+            return count;
         }
 
         public bool DataMove(Number number, Vector2 dest)
@@ -315,7 +306,6 @@ namespace WP
 
                 //更新数据层
                 numbers_data[(int)dest.x, (int)dest.y] = number;
-               
 
                 Number newNum = new Number();
 
@@ -360,8 +350,7 @@ namespace WP
 
                 //更新数据层
                 numbers_data[(int)destIndex.x, (int)destIndex.y] = number;
-                
-
+               
                 Number newNum = new Number();
 
                 newNum.SetCurrentIndex(lastIndex);
