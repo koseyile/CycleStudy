@@ -171,6 +171,10 @@ namespace WP
 
                 numbers_data[(int)v.x, (int)v.y].SetLastNum(num);
                 numbers_data[(int)v.x, (int)v.y].SetCurrentNum(num);
+                numbers_data[(int)v.x, (int)v.y].SetCurrentIndex(v);
+                numbers_data[(int)v.x, (int)v.y].SetLastIndex(v);
+                numbers_data[(int)v.x, (int)v.y].SetMergeIndex(v);
+                numbers_data[(int)v.x, (int)v.y].SetMerge(true);
 
                 numbers[(int)v.x, (int)v.y].SetNumber(num);
                 RenewBlank();
@@ -189,27 +193,36 @@ namespace WP
                         case InputProtocol.None:
                             break;
                         case InputProtocol.MoveRight:
-                            ShowLastData();
+                            Debug.Log("right");
+                            ShowCurrentData();
+                            ShowCurrentDataInfo();
                             MoveRight();
                             ShowCurrentData();
                             ShowCurrentDataInfo();
                             playerstate = State.PlayerWait;
                             break;
                         case InputProtocol.MoveLeft:
+                            Debug.Log("left");
                             ShowCurrentData();
+                            ShowCurrentDataInfo();
                             MoveLeft(); //计算结果
                             ShowCurrentData();
                             ShowCurrentDataInfo();
                             playerstate = State.PlayerWait;
                             break;
                         case InputProtocol.MoveUp:
+                            Debug.Log("up");
+                            ShowCurrentData();
+                            ShowCurrentDataInfo();
                             MoveUp();//计算结果
+                            ShowCurrentData();
+                            ShowCurrentDataInfo();
                             playerstate = State.PlayerWait;
                             break;
                         case InputProtocol.MoveDown:
                             ShowCurrentData();
+                            ShowCurrentDataInfo();
                             MoveDown();//计算结果
-                            
                             ShowCurrentData();
                             ShowCurrentDataInfo();
                             playerstate = State.PlayerWait;
@@ -228,7 +241,9 @@ namespace WP
                         GenerateNumbers();
                         waitTime = 1.2f;
                         playerstate = State.PlayerInput;
-                        
+
+                        ShowCurrentData();
+                        ShowCurrentDataInfo();
                     }
                     
                     break;
@@ -366,27 +381,29 @@ namespace WP
             int x = (int)number.GetCurrentIndex().x;
             int y = (int)number.GetCurrentIndex().y;
             int count = 0;
-            Debug.Log("x:" + x + " y:" + y);
+            //Debug.Log("x:" + x + " y:" + y);
 
             switch (orien)
             {
                 case "right":
                     for (int i = y + 1; i < size; i ++)
                     {
-                        Debug.Log("    " + "x:" + x + " y:" + y + "          " + i);
+                        //Debug.Log("    " + "x:" + x + " y:" + y + "          " + i);
 
                         if (DataMerge(number, numbers_data[x, i]))
                         {
-                            Debug.Log("merge" + "to" + i);
+                            //Debug.Log("merge" + "to" + i);
                             count++;
                         }
                         else
                         {
                             if (DataMove(number, new Vector2(x, i)))
                             {
-                                Debug.Log("move" + "to" + i);
+                                //Debug.Log("move" + "to" + i);
                                 count++;
                             }
+                            else
+                                break;
                         }
                     }
 
@@ -396,60 +413,66 @@ namespace WP
                 case "left":
                     for (int i = y - 1; i >= 0; i--)
                     {
-                        Debug.Log("    " + "x:" + x + " y:" + y + "          " + i);
+                        //Debug.Log("    " + "x:" + x + " y:" + y + "          " + i);
 
                         if (DataMerge(number, numbers_data[x, i]))
                         {
-                            Debug.Log("merge" + "to" + i);
+                            //Debug.Log("merge" + "to" + i);
                             count++;
                         }
                         else
                         {
                             if (DataMove(number, new Vector2(x, i)))
                             {
-                                Debug.Log("move" + "to" + i);
+                                //Debug.Log("move" + "to" + i);
                                 count++;
                             }
+                            else
+                                break;
                         }
                     }
                     break;
                 case "up":
                     for (int i = x + 1; i < size; i++)
                     {
-                        Debug.Log("    " + "x:" + x + " y:" + y + "          " + i);
+                        //Debug.Log("    " + "x:" + x + " y:" + y + "          " + i);
 
                         if (DataMerge(number, numbers_data[i, y]))
                         {
-                            Debug.Log("merge" + "to" + i);
+                            //Debug.Log("merge" + "to" + i);
                             count++;
                         }
                         else
                         {
                             if (DataMove(number, new Vector2(i, y)))
                             {
-                                Debug.Log("move" + "to" + i);
+                                //Debug.Log("move" + "to" + i);
                                 count++;
                             }
+                            else
+                                break;
                         }
                     }
                     break;
                 case "down":
                     for (int i = x - 1; i >= 0; i--)
                     {
-                        Debug.Log("    " + "x:" + x + " y:" + y + "          " + i);
+                        //Debug.Log("    " + "x:" + x + " y:" + y + "          " + i);
 
                         if (DataMerge(number, numbers_data[i, y]))
                         {
-                            Debug.Log("merge" + "to" + i);
+                            //Debug.Log("merge" + "to" + i);
                             count++;
                         }
                         else
                         {
                             if (DataMove(number, new Vector2(i, y)))
                             {
-                                Debug.Log("move" + "to" + i);
+                                //Debug.Log("move" + "to" + i);
                                 count++;
                             }
+                            else
+                                break;
                         }
                     }
 
@@ -533,7 +556,7 @@ namespace WP
                             numbers_data[i, j].SetMergeIndex(destIndex);
                             numbers_data[i, j].SetMerge(true);
 
-                            ShowCurrentDataInfo();
+                            //ShowCurrentDataInfo();
                         }
                     }
                 }
