@@ -100,7 +100,7 @@ namespace WP
 
         public void ModuleInit()
         {
-            waitTime = 4.0f;
+            waitTime = 2.0f;
             numbers = new INumberObject[4, 4];//声明渲染层
             numbers_data = new Number[4, 4];  //声明数据层
             blank = new List<Vector2>();      //声明空格
@@ -115,6 +115,7 @@ namespace WP
                     //初始化渲染层
                     numbers[i, j] = GameFramework.singleton.getGameRender().CreateObject(RenderProtocol.CreateNumberObject, size) as INumberObject;
                     numbers[i, j].SetNumber(0);
+                    numbers[i, j].SetDestNum(0);
                     numbers[i, j].SetPosition(new Vector2(i, j));
                     numbers[i, j].SetLastIndex(new Vector2(i, j));
                     numbers[i, j].SetIndex(new Vector2(i, j));
@@ -129,18 +130,6 @@ namespace WP
                     numbers_data[i, j].SetMerge(true);
                 }
             }
-
-            //numbers_data[0, 0].SetCurrentNum(16);
-            //numbers[0, 0].SetNumber(16);
-            //
-            //numbers_data[0, 1].SetCurrentNum(4);
-            //numbers[0, 1].SetNumber(4);
-            //
-            //numbers_data[0, 2].SetCurrentNum(4);
-            //numbers[0, 2].SetNumber(4);
-            //
-            //numbers_data[0, 3].SetCurrentNum(16);
-            //numbers[0, 3].SetNumber(16);
 
             RenewBlank();//更新空格列表
 
@@ -175,6 +164,7 @@ namespace WP
 
         public bool GenerateNumbers() //在数据层和渲染层随机生成2或4
         {
+            RenewBlank();
             int[] nums = { 2, 4 };
 
             int count = 2;
@@ -214,48 +204,22 @@ namespace WP
                           
                             if (MoveRight() > 0)
                             {
-                                ShowCurrentData();
-                                ShowCurrentDataInfo();
-
-                                DataToNumber();
-
-                                RenewBlank();
-                                
-                                ShowCurrentDataInfo();
-                                
-                                Test();
                                 playerstate = State.PlayerWait;
+                                numberstate = State.NumbersRight;
                             }
                             break;
                         case InputProtocol.MoveLeft:
                             if (MoveLeft() > 0)
                             {
-                                ShowCurrentData();
-                                ShowCurrentDataInfo();
-
-                                DataToNumber();
-
-                                RenewBlank();
-                                
-                                ShowCurrentDataInfo();
-                                
-                                Test();
                                 playerstate = State.PlayerWait;
+                                numberstate = State.NumbersLeft;
                             } 
                             break;
                         case InputProtocol.MoveUp:
                             if (MoveUp() > 0)
                             {
-                                ShowCurrentData();
-                                ShowCurrentDataInfo();
-
-                                DataToNumber();
-                                RenewBlank();
-                               
-                                ShowCurrentDataInfo();
-                                
-                                Test();
                                 playerstate = State.PlayerWait;
+                                numberstate = State.NumbersUp;
                             }
 
                             break;
@@ -263,16 +227,8 @@ namespace WP
                             
                             if (MoveDown() > 0)
                             {
-                                ShowCurrentData();
-                                ShowCurrentDataInfo();
-
-                                DataToNumber();
-                                RenewBlank();
-                                
-                                ShowCurrentDataInfo();
-                                
-                                Test();
                                 playerstate = State.PlayerWait;
+                                numberstate = State.NumbersDown;
                             }      
                             break;
                     }
@@ -281,15 +237,16 @@ namespace WP
                    if (waitTime > 0)
                    {
                        waitTime -= Time.deltaTime;
-                       NumberAnimate(2.5f);
-                       
+                       NumberAnimate(2.5f, numberstate);
                    }
                    else
                    {
-                       ShowNumber();
                        waitTime = 1.8f;
                        playerstate = State.PlayerInput;
-                   }
+                        numberstate = State.None;
+                        GenerateNumbers();
+                        ShowNumber();
+                    }
                     break;
                 default:
                     break;
@@ -314,7 +271,8 @@ namespace WP
                     numbers_data[i, j].SetMerge(true);
                 }
             }
-           
+
+            DataToNumber();
             return count;
         }
 
@@ -334,11 +292,9 @@ namespace WP
                 for (int j = 0; j < size; j++)
                 {
                     numbers_data[i, j].SetMerge(true);
-
-                    
                 }
             }
-           
+            DataToNumber();
             return count;
         }
 
@@ -360,7 +316,9 @@ namespace WP
                     numbers_data[i, j].SetMerge(true);
                 }
             }
-            
+
+            DataToNumber();
+
             return count;
         }
 
@@ -383,7 +341,8 @@ namespace WP
                 }
             }
 
-            
+            DataToNumber();
+
             return count;
         }
 
@@ -396,13 +355,17 @@ namespace WP
                     Vector2 last = numbers_data[i, j].GetLastIndex();
                     Vector2 current = numbers_data[i, j].GetCurrentIndex();
                     Vector2 mergeIndex = numbers_data[i, j].GetMergeIndex();
+
+                    int currentNum = numbers_data[i, j].GetCurrentNum();
                     if (last != current)
                     {
                         numbers[(int)last.x, (int)last.y].SetIndex(current);
+                        numbers[(int)last.x, (int)last.y].SetDestNum(currentNum);
                     }
                     if (last != mergeIndex)
                     {
                         numbers[(int)mergeIndex.x, (int)mergeIndex.y].SetIndex(current);
+                        numbers[(int)mergeIndex.x, (int)mergeIndex.y].SetDestNum(currentNum);
                     }
                 }
             }
@@ -606,12 +569,53 @@ namespace WP
             }
         }
 
-        public void NumberAnimate(float speed)
+        public void NumberAnimate(float speed, State state)
         {
-            for (int i = 0; i < size; i ++)
+            switch (state)
             {
-                for (int j = 0; j < size; j ++)
-                {
+                case State.NumbersRight:
+                    for (int i = 0; i < size; i ++)
+                    {
+                        for (int j = size - 1; j >= 0; j --)
+                        {
+                            Moving(speed, i, j);
+                        }
+                    }
+                    break;
+                case State.NumbersLeft:
+                    for (int i = 0; i < size; i ++)
+                    {
+                        for (int j = 0; j < size; j ++)
+                        {
+                            Moving(speed, i, j);
+                        }
+                    }
+                    break;
+                case State.NumbersUp:
+                    for (int i = size - 1; i >=0; i --)
+                    {
+                        for (int j = 0; j < size; j ++)
+                        {
+                            Moving(speed, i, j);
+                        }
+                    }
+                    break;
+                case State.NumbersDown:
+                    for (int i = 0; i < size; i ++)
+                    {
+                        for (int j = 0; j < size; j++)
+                        {
+                            Moving(speed, i, j);
+                        }
+                    }
+                    break;
+                default:break;
+            }
+           
+        }
+
+        public void Moving(float speed, int i, int j)
+        {
                     Debug.Log("移动");
                     Vector2 last = numbers[i, j].GetLastIndex();
                     Vector2 current = numbers[i, j].GetIndex();
@@ -620,16 +624,17 @@ namespace WP
                         Vector2 direct = (current - last).normalized;
                         Vector2 currentPos = numbers[i, j].GetCurrentPos();
 
-                        currentPos += direct * Time.deltaTime * speed /* * Mathf.Abs(current.x + current.y - last.x - last.y)*/;
+                        currentPos += direct * Time.deltaTime * speed  * Mathf.Abs(current.x + current.y - last.x - last.y);
                         numbers[i, j].SetPosition(currentPos);
 
-                        if (Mathf.Abs((currentPos - current).magnitude) < 0.06)
+                        if (Mathf.Abs((currentPos - current).magnitude) < 0.1)
                         {
-                            int num = numbers_data[i, j].GetCurrentNum();
+                            int num = numbers[i, j].GetDestNum();
                             GameFramework.singleton.getGameRender().DestroyObject(numbers[i, j]);
 
                             INumberObject number1 = GameFramework.singleton.getGameRender().CreateObject(RenderProtocol.CreateNumberObject, size) as INumberObject;
                             number1.SetNumber(num);
+                            number1.SetDestNum(num);
                             number1.SetIndex(current);
                             number1.SetLastIndex(current);
                             number1.SetPosition(current);
@@ -638,17 +643,15 @@ namespace WP
 
                             INumberObject number2 = GameFramework.singleton.getGameRender().CreateObject(RenderProtocol.CreateNumberObject, size) as INumberObject;
                             number2.SetNumber(0);
+                            number2.SetNumber(0);
                             number2.SetIndex(new Vector2(i, j));
                             number2.SetLastIndex(new Vector2(i, j));
                             number2.SetPosition(new Vector2(i, j));
 
                             numbers[i, j] = number2;
                         }
-
-
                     }
-                }
-            }
+
         }
 
 
