@@ -100,7 +100,7 @@ namespace WP
 
         public void ModuleInit()
         {
-            waitTime = 2.0f;
+            waitTime = 1.2f;
             numbers = new INumberObject[4, 4];//声明渲染层
             numbers_data = new Number[4, 4];  //声明数据层
             blank = new List<Vector2>();      //声明空格
@@ -132,7 +132,6 @@ namespace WP
             }
 
             RenewBlank();//更新空格列表
-
             GenerateNumbers(); //在数据层和渲染层生成随机2或4
             ShowCurrentData();
         }
@@ -241,7 +240,7 @@ namespace WP
                    }
                    else
                    {
-                       waitTime = 1.8f;
+                       waitTime = 1.2f;
                        playerstate = State.PlayerInput;
                         numberstate = State.None;
                         GenerateNumbers();
