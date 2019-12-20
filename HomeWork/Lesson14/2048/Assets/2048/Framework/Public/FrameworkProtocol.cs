@@ -43,6 +43,10 @@ namespace Game2048Framework
         int GetNumber();                         //wup: 获取Number数字
         void SetColor(Color color);              //wup: 设置Number颜色 
 
+        void SetDestNum(int num);
+
+        int GetDestNum();
+
         //void SetTargetIndex(Vector2 index);      //mengm：设置Number接下来要移动到的目标位置索引 （这个接口有需要的同学实现就好）
         //Vector2 GetTargetIndex();                //mengm:获取Number接下来要移动到的目标位置索引
         void SetIndex(Vector2 index);              //mengm: 设置位置索引

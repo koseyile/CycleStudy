@@ -79,5 +79,15 @@ namespace ZCY
         {
             throw new System.NotImplementedException();
         }
+
+        public void SetDestNum(int num)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public int GetDestNum()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

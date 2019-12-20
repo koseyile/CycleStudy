@@ -71,6 +71,5 @@ namespace Game2048Framework
             theGameRender.ModuleUpdate();
         }
     }
-
 }
 

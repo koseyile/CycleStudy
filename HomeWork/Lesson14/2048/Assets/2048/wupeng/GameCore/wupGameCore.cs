@@ -163,13 +163,13 @@ namespace WP
                             if (NumbersRight())
                             {
                                 numbersState = GameState.None;
-                                turn = GameState.PlayerInput;         
+                                turn = GameState.PlayerInput;
                             }
                             break;
                         default:
                             break;
 
-                    }               
+                    }
                     break;
                 default:
                     break;

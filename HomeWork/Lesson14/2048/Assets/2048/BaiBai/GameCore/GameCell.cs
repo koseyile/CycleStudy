@@ -81,6 +81,16 @@ namespace BBHW14 {
         {
             throw new System.NotImplementedException();
         }
+
+        public void SetDestNum(int num)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public int GetDestNum()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
 
@@ -158,6 +168,16 @@ namespace BBHW14 {
         }
 
         public Vector2 GetLastIndex()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void SetDestNum(int num)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public int GetDestNum()
         {
             throw new System.NotImplementedException();
         }

@@ -211,72 +211,85 @@ namespace WP
                         case InputProtocol.None:
                             break;
                         case InputProtocol.MoveRight:
-                            ShowCurrentData();
-                            ShowCurrentDataInfo();
+                          
                             if (MoveRight() > 0)
                             {
-                                RenewBlank();
                                 ShowCurrentData();
                                 ShowCurrentDataInfo();
-                                //DataToNumber();
-                                //Test();
 
-                            }                
+                                DataToNumber();
+
+                                RenewBlank();
+                                
+                                ShowCurrentDataInfo();
+                                
+                                Test();
+                                playerstate = State.PlayerWait;
+                            }
                             break;
                         case InputProtocol.MoveLeft:
-                            ShowCurrentData();
-                            ShowCurrentDataInfo();
-
                             if (MoveLeft() > 0)
                             {
-                                RenewBlank();
                                 ShowCurrentData();
                                 ShowCurrentDataInfo();
-                                //DataToNumber();
-                                //Test();
+
+                                DataToNumber();
+
+                                RenewBlank();
+                                
+                                ShowCurrentDataInfo();
+                                
+                                Test();
+                                playerstate = State.PlayerWait;
                             } 
                             break;
                         case InputProtocol.MoveUp:
-                            ShowCurrentData();
-                            ShowCurrentDataInfo();
                             if (MoveUp() > 0)
                             {
-                                RenewBlank();
                                 ShowCurrentData();
                                 ShowCurrentDataInfo();
-                                //DataToNumber();
-                                //Test();
 
-                            }
+                                DataToNumber();
+                                RenewBlank();
                                
+                                ShowCurrentDataInfo();
+                                
+                                Test();
+                                playerstate = State.PlayerWait;
+                            }
+
                             break;
-                        case InputProtocol.MoveDown:
-                            ShowCurrentData();
-                            ShowCurrentDataInfo();
+                        case InputProtocol.MoveDown:     
+                            
                             if (MoveDown() > 0)
                             {
-                                RenewBlank();
                                 ShowCurrentData();
                                 ShowCurrentDataInfo();
-                                //DataToNumber();
-                                //Test();
+
+                                DataToNumber();
+                                RenewBlank();
+                                
+                                ShowCurrentDataInfo();
+                                
+                                Test();
+                                playerstate = State.PlayerWait;
                             }      
                             break;
                     }
                     break;
                 case State.PlayerWait:
-                   //if (waitTime > 0)
-                   //{
-                   //    waitTime -= Time.deltaTime;
-                   //    NumberAnimate(1.5f);
-                   //    
-                   //}
-                   //else
-                   //{
-                   //    ShowNumber();
-                   //    waitTime = 1.2f;
-                   //    playerstate = State.PlayerInput;
-                   //}
+                   if (waitTime > 0)
+                   {
+                       waitTime -= Time.deltaTime;
+                       NumberAnimate(2.5f);
+                       
+                   }
+                   else
+                   {
+                       ShowNumber();
+                       waitTime = 1.8f;
+                       playerstate = State.PlayerInput;
+                   }
                     break;
                 default:
                     break;
@@ -326,7 +339,6 @@ namespace WP
                 }
             }
            
-
             return count;
         }
 
@@ -375,7 +387,6 @@ namespace WP
             return count;
         }
 
-
         public void DataToNumber()
         {
             for (int i = 0; i < size; i ++)
@@ -396,6 +407,23 @@ namespace WP
                 }
             }
 
+            for (int i = 0; i < size; i ++)
+            {
+                for (int j = 0; j < size; j ++)
+                {
+                    Vector2 last = numbers_data[i, j].GetLastIndex();
+                    Vector2 current = numbers_data[i, j].GetCurrentIndex();
+                    Vector2 mergeIndex = numbers_data[i, j].GetMergeIndex();
+                    if (last != current)
+                    {
+                        numbers_data[i, j].SetLastIndex(current);
+                    }
+                    if (mergeIndex != current)
+                    {
+                        numbers_data[i, j].SetMergeIndex(current);
+                    }
+                }
+            }
         }
 
         public bool DataMove(Number number, Vector2 dest)
@@ -467,7 +495,6 @@ namespace WP
             }
             else
                 return false;
-
         }
 
         public int DataMoveToEnd(Number number, string orien)
@@ -572,11 +599,10 @@ namespace WP
             for (int i = size - 1; i >=0; i --)
             {
                
-                    Debug.Log(numbers[i, 0].GetLastIndex() + " " + numbers[i, 0].GetIndex()+ "      " +
-                              numbers[i, 1].GetLastIndex() + " " + numbers[i, 1].GetIndex() + "      " +
-                              numbers[i, 2].GetLastIndex() + " " + numbers[i, 2].GetIndex() + "      " +
-                              numbers[i, 3].GetLastIndex() + " " + numbers[i, 3].GetIndex());
-                
+                    Debug.Log(numbers[i, 0].GetNumber() + "  " + numbers[i, 0].GetLastIndex() + " " + numbers[i, 0].GetIndex()+ "      " +
+                              numbers[i, 1].GetNumber() + "  " + numbers[i, 1].GetLastIndex() + " " + numbers[i, 1].GetIndex() + "      " +
+                              numbers[i, 2].GetNumber() + "  " + numbers[i, 2].GetLastIndex() + " " + numbers[i, 2].GetIndex() + "      " +
+                              numbers[i, 3].GetNumber() + "  " + numbers[i, 3].GetLastIndex() + " " + numbers[i, 3].GetIndex());
             }
         }
 
@@ -586,6 +612,7 @@ namespace WP
             {
                 for (int j = 0; j < size; j ++)
                 {
+                    Debug.Log("移动");
                     Vector2 last = numbers[i, j].GetLastIndex();
                     Vector2 current = numbers[i, j].GetIndex();
                     if (last != current)
@@ -598,7 +625,7 @@ namespace WP
 
                         if (Mathf.Abs((currentPos - current).magnitude) < 0.06)
                         {
-                            int num = numbers[i, j].GetNumber();
+                            int num = numbers_data[i, j].GetCurrentNum();
                             GameFramework.singleton.getGameRender().DestroyObject(numbers[i, j]);
 
                             INumberObject number1 = GameFramework.singleton.getGameRender().CreateObject(RenderProtocol.CreateNumberObject, size) as INumberObject;

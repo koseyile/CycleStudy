@@ -61,6 +61,7 @@ namespace WP
     {
         public GameObject objNumber;
         int number;
+        int destNumber;
         Vector2 position;
         Vector2 index;
         Vector2 lastIndex;
@@ -173,7 +174,16 @@ namespace WP
         {
             return this.lastIndex;
         }
-        
+
+        public void SetDestNum(int num)
+        {
+            this.destNumber = num;
+        }
+
+        public int GetDestNum()
+        {
+            return this.destNumber;
+        }
     }
 
 }
