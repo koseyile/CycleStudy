@@ -179,11 +179,7 @@ namespace WP
 
             int count = 2;
 
-            if (blank.Count == 1)
-                count = 1;
-            else if (blank.Count > 1)
-                count = 2;
-            else if (blank.Count == 0)
+            if (blank.Count < 2)
             {
                 Debug.Log("There is no space in checkboard! Can't genarate numbers!");
                 return false;
@@ -192,19 +188,12 @@ namespace WP
             for (int i = 0; i < count; i++)
             {
                 int index = Random.Range((int)0, (int)blank.Count);
-               
 
                 Vector2 v = blank[index];
 
                 int num = nums[Random.Range(0, 2)];
 
-                numbers_data[(int)v.x, (int)v.y].SetLastNum(num);
                 numbers_data[(int)v.x, (int)v.y].SetCurrentNum(num);
-                numbers_data[(int)v.x, (int)v.y].SetCurrentIndex(v);
-                numbers_data[(int)v.x, (int)v.y].SetLastIndex(v);
-                numbers_data[(int)v.x, (int)v.y].SetMergeIndex(v);
-                numbers_data[(int)v.x, (int)v.y].SetMerge(true);
-
                 numbers[(int)v.x, (int)v.y].SetNumber(num);
                 RenewBlank();
             }
